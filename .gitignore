@@ -1,0 +1,10 @@
+# Operating system files
+.DS_Store
+thumbs.db
+
+# Editor files
+.idea
+.vscode
+
+# Generated files
+tmp
