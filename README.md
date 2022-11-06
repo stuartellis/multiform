@@ -44,6 +44,7 @@ Use *make clean* to delete all generated files:
 ## Code Conventions for a Terraform Stack
 
 - Each stack is a Terraform root module.
+- A stack may include Terraform modules.
 - Each stack uses two sets of variable files: a *global  configuration* that applies to all instances of all stacks in all environments, and a *stack* configuration that is defined per *environment*.
 - Each stack is deployed with an *instance identifier*, so that multiple instances of a stack may be deployed to the same cloud account with the same *environment* definition. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
 - By default, the *instance identifier* is an empty string.
