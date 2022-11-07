@@ -60,3 +60,5 @@ Use *make clean* to delete all generated files:
 The implementation of the Terraform command builder:
 
 - **python/utils/utils/multiform.py**
+
+The builder is included in this example project whilst it is being developed. It is expected that the builder will be hosted in a separate repository at a later point in time.
