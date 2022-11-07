@@ -31,3 +31,7 @@ info:
 	@echo "Project: $(PROJECT_NAME)"
 	@echo "Maintainers: $(PROJECT_MAINTAINERS)"
 	@echo "Target Environment: $(ENVIRONMENT)"
+
+## Other Targets
+
+include make/tools/terraform-cli.mk
