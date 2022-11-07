@@ -50,10 +50,7 @@ Use *make clean* to delete all generated files:
 - Code conventions for Terraform stacks - **docs/tf-stacks-spec/0.1.0/terraform-stack-conventions.md**
 - Terraform command builder - **docs/tf-stacks-spec/0.1.0/terraform-command-builder.md**
 
-### Design of Example Project
-
-- Dependencies - **docs/project-design/dependencies.md**
-- Use of Make - **docs/project-design/use-of-make.md**
+The specifications are included in this example project whilst it is being developed. It is expected that the specifications will be hosted in a separate repository at a later point in time.
 
 ### Implementation of Terraform Command Builder
 
@@ -62,3 +59,8 @@ The current implementation of the Terraform command builder is here:
 - **python/utils/utils/multiform.py**
 
 The builder is included in this example project whilst it is being developed. It is expected that the builder will be hosted in a separate repository at a later point in time.
+
+### Design of Example Project
+
+- Dependencies - **docs/project-design/dependencies.md**
+- Use of Make - **docs/project-design/use-of-make.md**
