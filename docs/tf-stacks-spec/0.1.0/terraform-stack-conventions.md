@@ -4,7 +4,7 @@
 - The Terraform code and configuration in the stack should be standard Terraform code, compatible with Terraform 1.0.
 - A stack may include Terraform modules.
 - Each stack accepts an *stack_name* variable. This is a string that begins with a lowercase letter, and contains only alphanumeric characters and hyphens. It must have a maximum length of 30 characters.
-- The *stack_instance* should have no default value.
+- The *stack_name* variable should have no default value.
 - Each stack accepts an *stack_instance* variable. This is a string that begins with a lowercase letter, and contains only alphanumeric characters and hyphens. It must have a maximum length of 10 characters. Every resource name is prefixed with this string, so that multiple instances of a stack may be deployed to the same cloud account with the same *environment* definition. The content of the instance identifier is deliberately undefined: it could be a commit hash, ticket ID or other unique value. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
 - The *stack_instance* should have a default value of an empty string.
 - Each stack uses two sets of variable files: a *global  configuration* that applies to all instances of all stacks in all environments, and a *stack* configuration that is defined per *environment*.
