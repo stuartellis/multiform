@@ -12,7 +12,7 @@ Example of Terraform with multiple stacks.
 
 ## Setup
 
-This project includes the configuration for a Development Container. The Development Container provides all of the dependencies that the project requires.
+This project includes the configuration for a Development Container. The Development Container provides a development environment with all of the dependencies that the project requires.
 
 To use the development container with Visual Studio Code:
 
@@ -55,9 +55,9 @@ Use *make clean* to delete all generated files:
 - Dependencies - **docs/project-design/dependencies.md**
 - Use of Make - **docs/project-design/use-of-make.md**
 
-### Terraform Command Builder
+### Implementation of Terraform Command Builder
 
-The implementation of the Terraform command builder:
+The current implementation of the Terraform command builder is here:
 
 - **python/utils/utils/multiform.py**
 
