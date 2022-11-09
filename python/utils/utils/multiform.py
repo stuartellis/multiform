@@ -36,6 +36,9 @@ SOFTWARE.
 
 import argparse
 
+from string import Template
+
+
 """Semantic version of script"""
 VERSION = "0.1.0"
 
@@ -44,13 +47,14 @@ TF_STACKS_SPEC_VERSION = "0.1.0"
 
 """Default settings"""
 DEFAULTS = {
-    'terraform_root_dir': 'terraform',
-    'terraform_stacks_dir': 'stacks',
+    'tf_exe': 'terraform',
+    'tf_root_dir': 'terraform',
+    'tf_stacks_dir': 'stacks',
 }
 
 """Templates for Terraform subcommands"""
 CMD_TEMPLATES = {
-    'fmt': '',
+    'fmt': '$tf_exe fmt',
     'init': '',
     'plan': '',
     'validate': '',
@@ -62,6 +66,9 @@ def build_arg_parser(subcommands, version):
     parser = argparse.ArgumentParser(
         description='Command builder for multi-stack Terraform.')
     parser.add_argument(
+        'subcommand', choices=subcommands,
+        help=f"subcommand to run: {', '.join(subcommands.keys())}")
+    parser.add_argument(
         '-v', '--version',
         help='show the version of this script and exit',
         action='version', version="%(prog)s " + version)
@@ -70,14 +77,30 @@ def build_arg_parser(subcommands, version):
 
 def build_config(arguments, defaults):
     """Creates a configuration"""
-    config = {}
+    config = defaults
+    return config
 
 
-def main(builder_config, defaults, commands, version):
+def build_context(config):
+    """Creates a template context"""
+    return config
+
+
+def render(template, context):
+    """Renders a string from a template"""
+    templater = Template(template)
+    return templater.substitute(context)
+
+
+def main(defaults, commands, version):
     """Main function for running script from the command-line"""
-    parser = build_arg_parser(set(commands), version)
-    arguments = vars(parser.parse_args())
-    config = build_config(arguments, defaults)
+    parser = build_arg_parser(commands, version)
+    args = vars(parser.parse_args())
+    config = build_config(args, defaults)
+    context = build_context(config)
+    selected_cmd = args['subcommand']
+    cmd = render(commands[selected_cmd], context)
+    print(cmd)
 
 
 """Runs the main() function when this file is executed"""
