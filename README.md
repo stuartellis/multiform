@@ -1,6 +1,6 @@
 # Multiform
 
-Example of Terraform with multiple stacks.
+Example of a monorepo that includes Terraform with multiple stacks.
 
 ## Dependencies
 
