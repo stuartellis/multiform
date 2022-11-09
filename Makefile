@@ -14,6 +14,7 @@ MAKEFLAGS += --no-builtin-rules
 PROJECT_NAME			?= FIXME
 PROJECT_MAINTAINERS		?= FIXME
 ENVIRONMENT				?= FIXME
+STACK_NAME				?= FIXME
 
 # Default Target
 
