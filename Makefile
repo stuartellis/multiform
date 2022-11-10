@@ -1,4 +1,4 @@
-# Makefile
+# Default Makefile
 
 # Configuration for Make
 
@@ -9,16 +9,17 @@ SHELL := /bin/bash
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
+
 # Project Variables
 
-PROJECT_NAME			?= FIXME
+PROJECT_NAME			?= multiform
 PROJECT_MAINTAINERS		?= FIXME
-ENVIRONMENT				?= FIXME
-STACK_NAME				?= FIXME
+ENVIRONMENT				?= dev
 
 # Default Target
 
 .DEFAULT_GOAL := info
+
 
 ## Project Targets
 
@@ -33,6 +34,8 @@ info:
 	@echo "Maintainers: $(PROJECT_MAINTAINERS)"
 	@echo "Target Environment: $(ENVIRONMENT)"
 
-## Other Targets
+### Multiform Targets
 
-include make/tools/terraform-cli.mk
+include make/multiform/stack-terraform-cli.mk
+
+###

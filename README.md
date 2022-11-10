@@ -34,6 +34,10 @@ Use *make clean* to delete all generated files:
 
     make clean
 
+Make targets for Terraform stacks use the prefix *stack-*. For example:
+
+    make stack-info
+
 ---
 
 ## Design 
