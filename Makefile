@@ -36,6 +36,7 @@ info:
 
 ### Multiform Targets
 
+include make/multiform/stack-core.mk
 include make/multiform/stack-terraform-cli.mk
 
 ###
