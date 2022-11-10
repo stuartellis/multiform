@@ -2,6 +2,8 @@
 
 Example of a monorepo that includes Terraform with multiple stacks.
 
+> /!\ EXPERIMENTAL: This project is under development.
+
 ## Dependencies
 
 - Bash 4 or above
