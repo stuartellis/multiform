@@ -14,13 +14,14 @@ Example of a monorepo that includes Terraform with multiple stacks.
 
 ## Setup
 
-This project includes the configuration for a Development Container. The Development Container provides a development environment with all of the dependencies that the project requires.
+This project includes the configuration for a [Development Container](https://containers.dev/). The Development Container provides a Linux development environment with all of the dependencies that the project requires.
 
-To use the development container with Visual Studio Code:
+To use a development container with Visual Studio Code:
 
 1. Ensure that Docker is running
 2. Ensure that the **Dev Containers** extension is installed on Visual Studio Code
-3. Accept the option to reopen the project in a container when prompted.
+3. Open the project as a folder in Visual Studio Code
+4. Accept the option to reopen the project in a container when prompted.
 
 ## Usage
 
