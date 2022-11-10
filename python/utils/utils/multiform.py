@@ -35,6 +35,7 @@ SOFTWARE.
 """
 
 import argparse
+import json
 
 from pathlib import Path
 from string import Template
@@ -48,23 +49,23 @@ VERSION = "0.1.0"
 TF_STACKS_SPEC_VERSION = "0.1.0"
 
 
-"""Default settings"""
+"""Default settings, determined by stack specification"""
 DEFAULTS = {
     'tf_exe': 'terraform',
-    'tf_root_dir': 'terraform',
-    'tf_stacks_dir': 'stacks',
+    'root_dir': 'terraform',
+    'stacks_dir': 'stacks',
 }
 
 
 """Templates for Terraform subcommands"""
 CMD_TEMPLATES = {
     'apply': 'FIXME',
-    'console': '$tf_exe -chdir=$tf_stack_path console',
+    'console': '$terraform_tf_exe -chdir=$stack_path console',
     'destroy': 'FIXME',
-    'fmt': '$tf_exe -chdir=$tf_stack_path fmt',
-    'init': '$tf_exe -chdir=$tf_stack_path init',
+    'fmt': '$terraform_tf_exe -chdir=$stack_path fmt',
+    'init': '$terraform_tf_exe -chdir=$stack_path init',
     'plan': 'FIXME',
-    'validate': '$tf_exe -chdir=$tf_stack_path validate',
+    'validate': '$terraform_tf_exe -chdir=$stack_path validate',
 }
 
 
@@ -80,6 +81,15 @@ def build_arg_parser(subcommands, version):
         help='the name of the environment.',
         action='store')
     parser.add_argument(
+        '-i', '--instance',
+        help='the instance of the stack.',
+        default='',
+        action='store')
+    parser.add_argument(
+        '--print',
+        help='output configuration as JSON',
+        action='store_true')
+    parser.add_argument(
         '-s', '--stack',
         help='the name of the stack.',
         action='store')
@@ -90,18 +100,19 @@ def build_arg_parser(subcommands, version):
     return parser
 
 
-def build_config(args, defaults):
+def build_config(terraform, project, stack):
     """Creates a configuration"""
-    config = defaults
-    project_path = build_project_path(defaults['tf_root_dir'])
-    stack_path = build_stack_path(project_path, defaults['tf_stacks_dir'], args['stack'])
-    config['tf_stack_path'] = stack_path
+    config = {}
+    config['terraform'] = terraform
+    config['project'] = project
+    config['stack'] = stack
     return config
 
 
-def build_context(config):
-    """Creates a template context"""
-    return config
+def build_tf_context(config):
+    """Creates a template context for Terraform commands"""
+    context = parse_dict(config)
+    return context
 
 
 def build_project_path(root_path):
@@ -116,6 +127,21 @@ def build_stack_path(root_path, stack_dir, stack_name):
     return stack_path
 
 
+def parse_dict(init, lkey=''):
+    """
+    Flattens dictionary.
+    Taken from: https://stackoverflow.com/questions/6027558/flatten-nested-dictionaries-compressing-keys
+    """
+    ret = {}
+    for rkey, val in init.items():
+        key = lkey+rkey
+        if isinstance(val, dict):
+            ret.update(parse_dict(val, key+'_'))
+        else:
+            ret[key] = val
+    return ret
+
+
 def render(template, context):
     """Renders a string from a template"""
     templater = Template(template)
@@ -126,11 +152,25 @@ def main(defaults, commands, version):
     """Main function for running script from the command-line"""
     parser = build_arg_parser(commands, version)
     args = vars(parser.parse_args())
-    config = build_config(args, defaults)
-    context = build_context(config)
-    selected_cmd = args['subcommand']
-    cmd = render(commands[selected_cmd], context)
-    print(cmd)
+    project_path = build_project_path(defaults['root_dir'])
+    project = {
+        'environment': args['environment'].lower(),
+        'full_path': str(project_path),
+    }
+    stack_path = build_stack_path(project_path, defaults['stacks_dir'], args['stack'])
+    stack = {
+       'name': args['stack'].lower(),
+       'instance': args['instance'].lower(),
+       'path': str(stack_path),
+    }
+    config = build_config(defaults, project, stack)
+    if args['print']:
+        print(json.dumps(config, indent=4))
+    else:
+        tf_context = build_tf_context(config)
+        selected_cmd = args['subcommand']
+        cmd = render(commands[selected_cmd], tf_context)
+        print(cmd)
 
 
 """Runs the main() function when this file is executed"""
