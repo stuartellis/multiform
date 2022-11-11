@@ -36,10 +36,9 @@ SOFTWARE.
 
 import argparse
 import json
-
+import os
 from pathlib import Path
 from string import Template
-
 
 """Semantic version of script"""
 VERSION = "0.1.0"
@@ -52,8 +51,9 @@ TF_STACKS_SPEC_VERSION = "0.2.0"
 """Default settings, determined by stack specification"""
 DEFAULTS = {
     'tf_exe': 'terraform',
-    'root_dir': 'terraform',
+    'tf_root_dir': 'terraform',
     'stacks_dir': 'stacks',
+    'stacks_def_dir': 'definitions'
 }
 
 
@@ -69,8 +69,15 @@ CMD_TEMPLATES = {
 }
 
 
+def build_absolute_path(relative_root_path, sub_path):
+    """Returns an absolute Path object"""
+    relative_path = os.sep.join([relative_root_path, sub_path])
+    path_obj = Path(relative_path)
+    return path_obj.absolute()
+
+
 def build_arg_parser(subcommands, version):
-    """Creates the parser for the command-line arguments"""
+    """Returns a parser for the command-line arguments"""
     parser = argparse.ArgumentParser(
         description='Command builder for multi-stack Terraform.')
     parser.add_argument(
@@ -79,6 +86,7 @@ def build_arg_parser(subcommands, version):
     parser.add_argument(
         '-e', '--environment',
         help='the name of the environment.',
+        required=True,
         action='store')
     parser.add_argument(
         '-i', '--instance',
@@ -87,11 +95,12 @@ def build_arg_parser(subcommands, version):
         action='store')
     parser.add_argument(
         '--print',
-        help='output configuration as JSON',
+        help='output generated configuration as JSON, instead of a Terraform command.',
         action='store_true')
     parser.add_argument(
         '-s', '--stack',
         help='the name of the stack.',
+        required=True,
         action='store')
     parser.add_argument(
         '-v', '--version',
@@ -115,15 +124,9 @@ def build_tf_context(config):
     return context
 
 
-def build_project_path(root_path):
-    """Returns the absolute path to the project"""
-    relative_path = Path(root_path)
-    return relative_path.absolute()
-
-
-def build_stack_path(root_path, stack_dir, stack_name):
-    """Returns the path to the stack"""
-    stack_path = root_path.joinpath(stack_dir, stack_name)
+def build_stack_path(root_path, stacks_dir, stack_name):
+    """Returns a Path object for the stack directory"""
+    stack_path = root_path.joinpath(stacks_dir, stack_name)
     return stack_path
 
 
@@ -152,18 +155,18 @@ def main(defaults, commands, version):
     """Main function for running script from the command-line"""
     parser = build_arg_parser(commands, version)
     args = vars(parser.parse_args())
-    project_path = build_project_path(defaults['root_dir'])
-    project = {
+    tf_project_path = build_absolute_path(defaults['tf_root_dir'], defaults['stacks_dir'])
+    tf_project = {
         'environment': args['environment'].lower(),
-        'full_path': str(project_path),
+        'full_path': str(tf_project_path),
     }
-    stack_path = build_stack_path(project_path, defaults['stacks_dir'], args['stack'])
+    stack_path = build_stack_path(tf_project_path, defaults['stacks_def_dir'], args['stack'])
     stack = {
        'name': args['stack'].lower(),
        'instance': args['instance'].lower(),
        'path': str(stack_path),
     }
-    config = build_config(defaults, project, stack)
+    config = build_config(defaults, tf_project, stack)
     if args['print']:
         print(json.dumps(config, indent=4))
     else:
