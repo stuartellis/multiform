@@ -24,18 +24,25 @@
 
 ## Terraform State
 
-- The stack should use remote state, but no values should be defined in the code. Each stack will have a separate Terraform state file per environment and stack instance, but this is not handled in the stack code.
+- Each stack should use remote state, but no values should be defined in the code. Each stack will have a separate Terraform state file per environment and stack instance, but this is not handled in the stack code.
 - Avoid references to remote Terraform state, so that instances of a stack do not have dependencies on the state of other Terraform deployments
 
 ## AWS
 
-- The stack should not hard-code the IAM execution role that it uses with AWS.
+- A stack should not hard-code the IAM execution role that it uses with AWS.
 - Each stack should be deployable on any cloud account that can provide the resources that the stack depends on.
-- If using AWS, each stack should publish an ARN for each key resource that it manages to Parameter Store in the same account and region
+- Each stack should publish an ARN for each key resource that it manages to Parameter Store, in the same account and region.
+
+## Code Deployment
+
+- Stacks should only deploy artifacts that have already been built by a separate process.
+- A stack should specify the name and version of each code artifact that it deploys as a Terraform variable.
+- This specification does not require a particular format for artifact versions. For consistency, consider using either [Semantic Versioning](https://semver.org/) or a [Calendar Versioning](https://calver.org/) format.
 
 ## TODO
 
 - Define how remote state identifiers are collected.
 - Define handling of separator characters in identifiers.
+- Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
 - Improve guidance on cross-stack references.
