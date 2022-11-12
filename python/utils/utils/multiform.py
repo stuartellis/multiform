@@ -69,10 +69,10 @@ TF_COMMANDS = {
     'apply': 'FIXME',
     'console': '-chdir=$stack_full_path',
     'destroy': 'FIXME',
-    'fmt': '$host_tf_exe $cmd_options fmt',
-    'init': '$host_tf_exe $cmd_options init',
-    'plan': '$host_tf_exe $cmd_options plan',
-    'validate': '$host_tf_exe $cmd_options validate',
+    'fmt': '-chdir=$stack_full_path',
+    'init': '-chdir=$stack_full_path',
+    'plan': '-chdir=$stack_full_path',
+    'validate': '-chdir=$stack_full_path',
 }
 
 
@@ -118,11 +118,12 @@ def build_arg_parser(subcommands, version):
 
 def build_config(host, stackset, stack, environment):
     """Creates a configuration"""
-    config = {}
-    config['host'] = host
-    config['stackset'] = stackset
-    config['stack'] = stack
-    config['environment'] = environment
+    config = {
+      'host': host,
+      'stackset': stackset,
+      'stack': stack,
+      'environment': environment,
+    }
     return config
 
 
@@ -198,13 +199,19 @@ def main(defaults, commands, version):
     """Main function for running script from the command-line"""
     parser = build_arg_parser(commands, version)
     args = vars(parser.parse_args())
+
     host_config = build_host_config(args['subcommand'], defaults)
+
     tf_stackset_path = build_absolute_path(host_config['tf_root_dir'], host_config['stackset_dir'])
     stackset_config = build_stackset_config(tf_stackset_path)
+
     stack_path = build_stack_path(tf_stackset_path, defaults['stacks_def_dir'], args['stack'])
     stack_config = build_stack_config(args['stack'], args['instance'], stack_path)
+
     environment_config = build_environment_config(args['environment'])
+
     config = build_config(host_config, stackset_config, stack_config, environment_config)
+
     if args['print']:
         print(json.dumps(config, indent=4))
     else:
