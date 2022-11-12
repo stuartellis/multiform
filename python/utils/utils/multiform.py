@@ -1,4 +1,3 @@
-
 """
 
 Command builder for multi-stack Terraform.
@@ -7,6 +6,14 @@ This script has the following dependencies:
 
 * Python 3.8 or above
 * Terraform 1.0 or above
+
+Usage:
+
+    python3 python/utils/utils/multiform.py init -e my-stack -e dev
+
+Help:
+
+    python3 python/utils/utils/multiform.py --help
 
 It is provided under the terms of the MIT License:
 
