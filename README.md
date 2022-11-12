@@ -66,6 +66,8 @@ The current implementation of the Terraform command builder is here:
 
 - **python/utils/utils/multiform.py**
 
+The Make targets in this project use the command builder. You may also run the command builder yourself.
+
 The builder is included in this example project whilst it is being developed. It is expected that the builder will be hosted in a separate repository at a later point in time.
 
 ### Design of Example Project
