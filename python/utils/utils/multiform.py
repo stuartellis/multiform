@@ -41,7 +41,7 @@ from pathlib import Path
 from string import Template
 
 """Semantic version of script"""
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 
 """Relevant version of Terraform stacks specification"""
@@ -52,20 +52,20 @@ TF_STACKS_SPEC_VERSION = "0.2.0"
 DEFAULTS = {
     'tf_exe': 'terraform',
     'tf_root_dir': 'terraform',
-    'stacks_dir': 'stacks',
+    'stackset_dir': 'stacks',
     'stacks_def_dir': 'definitions'
 }
 
 
 """Templates for Terraform subcommands"""
-CMD_TEMPLATES = {
+TF_COMMANDS = {
     'apply': 'FIXME',
-    'console': '$terraform_tf_exe -chdir=$stack_path console',
+    'console': '-chdir=$stack_full_path',
     'destroy': 'FIXME',
-    'fmt': '$terraform_tf_exe -chdir=$stack_path fmt',
-    'init': '$terraform_tf_exe -chdir=$stack_path init',
-    'plan': 'FIXME',
-    'validate': '$terraform_tf_exe -chdir=$stack_path validate',
+    'fmt': '$host_tf_exe $cmd_options fmt',
+    'init': '$host_tf_exe $cmd_options init',
+    'plan': '$host_tf_exe $cmd_options plan',
+    'validate': '$host_tf_exe $cmd_options validate',
 }
 
 
@@ -109,28 +109,64 @@ def build_arg_parser(subcommands, version):
     return parser
 
 
-def build_config(terraform, project, stack):
+def build_config(host, stackset, stack, environment):
     """Creates a configuration"""
     config = {}
-    config['terraform'] = terraform
-    config['project'] = project
+    config['host'] = host
+    config['stackset'] = stackset
     config['stack'] = stack
+    config['environment'] = environment
     return config
 
 
-def build_tf_context(config):
-    """Creates a template context for Terraform commands"""
-    context = parse_dict(config)
+def build_environment_config(name):
+    environment = {
+        'name': name.lower(),
+    }
+    return environment
+
+
+def build_host_config(subcommand, defaults):
+    host_config = defaults
+    host_config['tf_cmd'] = subcommand
+    return host_config
+
+
+def build_stackset_config(stackset_path):
+    stackset = {
+        'full_path': str(stackset_path),
+    }
+    return stackset
+
+
+def build_stack_config(stack, instance, stack_path):
+    stack_config = {
+       'name': stack.lower(),
+       'instance': instance.lower(),
+       'full_path': str(stack_path),
+    }
+    return stack_config
+
+
+def build_cmd_context(config):
+    """Creates a context for Terraform commands"""
+    context = flatten_dict(config)
     return context
 
 
-def build_stack_path(root_path, stacks_dir, stack_name):
+def build_cmd_template(cmd_options):
+    """Creates a template for Terraform commands"""
+    cmd_template = f"$host_tf_exe {cmd_options} $host_tf_cmd"
+    return cmd_template
+
+
+def build_stack_path(root_path, stackset_dir, stack_name):
     """Returns a Path object for the stack directory"""
-    stack_path = root_path.joinpath(stacks_dir, stack_name)
+    stack_path = root_path.joinpath(stackset_dir, stack_name)
     return stack_path
 
 
-def parse_dict(init, lkey=''):
+def flatten_dict(init, lkey=''):
     """
     Flattens dictionary.
     Taken from: https://stackoverflow.com/questions/6027558/flatten-nested-dictionaries-compressing-keys
@@ -139,7 +175,7 @@ def parse_dict(init, lkey=''):
     for rkey, val in init.items():
         key = lkey+rkey
         if isinstance(val, dict):
-            ret.update(parse_dict(val, key+'_'))
+            ret.update(flatten_dict(val, key+'_'))
         else:
             ret[key] = val
     return ret
@@ -155,27 +191,23 @@ def main(defaults, commands, version):
     """Main function for running script from the command-line"""
     parser = build_arg_parser(commands, version)
     args = vars(parser.parse_args())
-    tf_project_path = build_absolute_path(defaults['tf_root_dir'], defaults['stacks_dir'])
-    tf_project = {
-        'environment': args['environment'].lower(),
-        'full_path': str(tf_project_path),
-    }
-    stack_path = build_stack_path(tf_project_path, defaults['stacks_def_dir'], args['stack'])
-    stack = {
-       'name': args['stack'].lower(),
-       'instance': args['instance'].lower(),
-       'path': str(stack_path),
-    }
-    config = build_config(defaults, tf_project, stack)
+    host_config = build_host_config(args['subcommand'], defaults)
+    tf_stackset_path = build_absolute_path(host_config['tf_root_dir'], host_config['stackset_dir'])
+    stackset_config = build_stackset_config(tf_stackset_path)
+    stack_path = build_stack_path(tf_stackset_path, defaults['stacks_def_dir'], args['stack'])
+    stack_config = build_stack_config(args['stack'], args['instance'], stack_path)
+    environment_config = build_environment_config(args['environment'])
+    config = build_config(host_config, stackset_config, stack_config, environment_config)
     if args['print']:
         print(json.dumps(config, indent=4))
     else:
-        tf_context = build_tf_context(config)
-        selected_cmd = args['subcommand']
-        cmd = render(commands[selected_cmd], tf_context)
+        tf_cmd_options = commands[config['host']['tf_cmd']]
+        cmd_template = build_cmd_template(tf_cmd_options)
+        cmd_context = build_cmd_context(config)
+        cmd = render(cmd_template, cmd_context)
         print(cmd)
 
 
 """Runs the main() function when this file is executed"""
 if __name__ == '__main__':
-    main(DEFAULTS, CMD_TEMPLATES, VERSION)
+    main(DEFAULTS, TF_COMMANDS, VERSION)
