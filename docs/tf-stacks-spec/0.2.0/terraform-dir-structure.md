@@ -1,10 +1,9 @@
 ## Terraform Directory Structure 0.2.0
 
-- Each project has single root directory for Terraform code and configuration
-- The project root directory for Terraform is called *terraform/stacks/*
-- Other sub-directories under the *terraform/* directory are ignored. This enables co-existance with other solutions.
+- Each project has a root directory for Terraform code and configuration, called *terraform/*
+- The root directory for the set of Terraform stacks is called *terraform/stacks/*
 - Each stack is a sub-directory under the *terraform/stacks/definitions/* directory.
-- Terraform code should only use files in the *terraform/stacks/* directory or subdirectories. It should not  reference or rely upon files that are outside the *terraform/stacks/* directory.
+- Code for stacks only references or rely upon files that are in the *terraform/stacks/* directory. It ignores other sub-directories under the *terraform/* directory. This enables co-existance with other solutions.
 
 ## TODO
 

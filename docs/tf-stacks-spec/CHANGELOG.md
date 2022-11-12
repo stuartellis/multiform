@@ -9,6 +9,7 @@ and this specification adheres to [Semantic Versioning](https://semver.org/spec/
 
 ### Added
 
+- Define terraform/stacks directory as a *set* of stacks, to abstract the group of stacks from the host project
 - Specify a terraform/stacks/definitions/ as the parent directory for stacks, to support side-by-side.
 
 ### Changed
