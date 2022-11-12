@@ -10,21 +10,24 @@
 
 - Each stack accepts a *stack_name* variable. This is a string that begins with a lowercase letter, and contains only alphanumeric characters and hyphens. It must have a maximum length of 30 characters.
 - The *stack_name* variable should have no default value.
-- Each stack accepts a *stack_instance* variable. This is a string that begins with a lowercase letter, and contains only alphanumeric characters and hyphens. It must have a maximum length of 10 characters. The content of the instance identifier is deliberately undefined: it could be a commit hash, ticket ID or other unique value. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
+- Each stack accepts a *stack_instance* variable. This is a string that begins with a lowercase letter, and contains only alphanumeric characters and hyphens. It must have a maximum length of 10 characters. The content of the instance identifier is deliberately undefined: it could be a commit hash, release version, ticket ID, or other unique value. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
 - The *stack_instance* should have a default value of an empty string.
 - Every resource name is prefixed with the *stack_instance* variable, so that multiple instances of a stack may be deployed to the same cloud account with the same *environment* definition.
+- Guideline: Avoid writing the name of a specific resource type in a stack name or instance identifier, such as *s3*. Use product names and areas of concern.
 
 ## Terraform Providers
 
-- A stack may use multiple providers. If possible, split resources that use different providers for cloud services into separate stacks.
+- A stack may use multiple providers.
+- Guideline: each stack should have one provider for a cloud service. If you have multiple providers for cloud services in the same stack, consider separating the resources into separate stacks.
 
 ## Terraform Variables
 
-- Each stack uses two sets of variable files: a *global  configuration* that applies to all instances of all stacks in all environments, and a *stack* configuration that is defined per *environment*. The number of variable files is limited to reduce complexity.
+- Each stack uses two sets of variable files: a *global configuration* that applies to all of the stacks in the set for all environments, and a *stack* configuration that is defined per *environment*. This specification limits the number of variable files to two in order to reduce complexity.
 
 ## Terraform State
 
-- Each stack should use remote state, but no values should be defined in the code. Each stack will have a separate Terraform state file per environment and stack instance, but this is not handled in the stack code.
+- Each stack should use a remote state backend.
+- No values for remote state should be defined in the Terraform code. Each stack will have a separate Terraform state file per environment and stack instance. This configuration should be provided when a Terraform command is run. 
 - Avoid references to remote Terraform state, so that instances of a stack do not have dependencies on the state of other Terraform deployments
 
 ## AWS
@@ -41,6 +44,7 @@
 
 ## TODO
 
+- Stack instances vs. Terraform workspaces.
 - Define how remote state identifiers are collected.
 - Define handling of separator characters in identifiers.
 - Define standard path structure for Parameter Store.
