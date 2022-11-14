@@ -7,6 +7,8 @@ and this specification adheres to [Semantic Versioning](https://semver.org/spec/
 
 ## [Unreleased]
 
+## [0.2.0] - 2022-11-14
+
 ### Added
 
 - Define terraform/stacks directory as a *set* of stacks, to abstract the group of stacks from the host project
