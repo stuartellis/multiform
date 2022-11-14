@@ -48,11 +48,11 @@ from pathlib import Path
 from string import Template
 
 """Semantic version of script"""
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 
 """Relevant version of Terraform stacks specification"""
-TF_STACKS_SPEC_VERSION = "0.2.0"
+TF_STACKS_SPEC_VERSION = "0.3.0"
 
 
 """Default settings, determined by stack specification"""
