@@ -50,8 +50,6 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
 5. Each Terraform command that the builder produces executes on a specific Terraform stack, which is defined by the *expected directory structure*.
 6. This example implementation of a project uses a standard set of tools that are provided on current versions of macOS. Linux distributions provide newer versions of the same tools. This means that the project will run on any macOS, WSL or Linux system.
 
-> *This design does not use Terraform workspaces*
-
 ### Specifications
 
 - Expected directory structure for Terraform - **docs/tf-stacks-spec/0.2.0/terraform-dir-structure.md**
