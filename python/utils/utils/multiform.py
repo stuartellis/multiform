@@ -2,10 +2,7 @@
 
 Command builder for multi-stack Terraform.
 
-This script has the following dependencies:
-
-* Python 3.8 or above
-* Terraform 1.0 or above
+This script requires Python 3.8 or above. It has no other dependencies.
 
 Usage:
 
@@ -64,16 +61,15 @@ DEFAULTS = {
     'stacks_env_dir': 'environments',
 }
 
-
-"""Templates for Terraform subcommands"""
-TF_COMMANDS = {
-    'apply': 'FIXME',
-    'console': '-chdir=$stack_full_path',
-    'destroy': 'FIXME',
-    'fmt': '-chdir=$stack_full_path',
-    'init': '-chdir=$stack_full_path',
-    'plan': '-chdir=$stack_full_path',
-    'validate': '-chdir=$stack_full_path',
+"""Subcommands"""
+SUB_COMMANDS = {
+  'fmt': 'aaaa',
+  'apply': 'aaaa',
+  'console': 'aaaa',
+  'destroy': 'aaaa',
+  'init': 'aaaa',
+  'plan': 'aaaa',
+  'validate': 'aaaa',
 }
 
 
@@ -130,8 +126,9 @@ def build_host_config(subcommand, defaults):
     return host_config
 
 
-def build_stackset_config(stackset_path):
+def build_stackset_config(name, stackset_path):
     return {
+        'name': name.lower(),
         'full_path': str(stackset_path),
     }
 
@@ -144,16 +141,6 @@ def build_stack_config(stack, instance, stack_path, varfile_path):
        'varfile_path': str(varfile_path),
     }
     return stack_config
-
-
-def build_cmd_context(config):
-    """Creates a context for Terraform commands"""
-    return flatten_dict(config)
-
-
-def build_cmd_template(cmd_options, arguments):
-    """Creates a template for Terraform commands"""
-    return f"$host_tf_exe {cmd_options} $host_tf_cmd {arguments}"
 
 
 def build_stack_path(root_path, stackset_dir, stack_name):
@@ -176,21 +163,35 @@ def flatten_dict(init, lkey=''):
     return ret
 
 
-def render(template, context):
-    """Renders a string from a template"""
-    templater = Template(template)
-    return templater.substitute(context)
+def render_cmd(host, stackset, stack, environment):
+    # tf_aws_backend_config = f'-backend-config="bucket={}" -backend-config="key={}" -backend-config="region={}"'
+
+    tf_var_arguments = f"-var=stack_name={stack['name']} -var=environment={environment['name']}"
+    if stack['instance']:
+        tf_var_arguments = tf_var_arguments + f" -var=stack_instance={stack['instance']}"
+    tf_var_file_arguments = f"-var-file={stack['varfile_path']} -var-file={environment['varfile_path']}"
+    tf_arguments = ' '.join([tf_var_arguments, tf_var_file_arguments])
+    tf_cmd_options = '-chdir=$stack_full_path'
+
+    cmd_template = f"$host_tf_exe {tf_cmd_options} $host_tf_cmd {tf_arguments}"
+    templater = Template(cmd_template)
+
+    config = {'host': host, 'stackset': stackset, 'stack': stack, 'environment': environment}
+    cmd_context = flatten_dict(config)
+    
+    return templater.substitute(cmd_context)
 
 
-def main(defaults, commands, version):
+def main(defaults, subcommands, version):
     """Main function for running script from the command-line"""
-    parser = build_arg_parser(commands, version)
+    parser = build_arg_parser(subcommands, version)
     args = vars(parser.parse_args())
 
     host_config = build_host_config(args['subcommand'], defaults)
 
+    project_name = build_absolute_path(host_config['tf_root_dir']).parent.stem
     tf_stackset_path = build_absolute_path(host_config['tf_root_dir'], host_config['stackset_dir'])
-    stackset_config = build_stackset_config(tf_stackset_path)
+    stackset_config = build_stackset_config(project_name, tf_stackset_path)
 
     stack_path = build_stack_path(tf_stackset_path, defaults['stacks_def_dir'], args['stack'])
     stack_varfile_path = build_absolute_path(host_config['tf_root_dir'], host_config['stackset_dir'], host_config['stacks_env_dir'], 'all', f"{args['stack']}.tfvars")
@@ -199,24 +200,14 @@ def main(defaults, commands, version):
     environment_path = build_absolute_path(host_config['tf_root_dir'], host_config['stackset_dir'], host_config['stacks_env_dir'], args['environment'], f"{args['stack']}.tfvars")
     environment_config = build_environment_config(args['environment'], environment_path)
 
-    config = {'host': host_config, 'stackset': stackset_config, 'stack': stack_config, 'environment': environment_config}
-
     if args['print']:
+        config = {'host': host_config, 'stackset': stackset_config, 'stack': stack_config, 'environment': environment_config}
         print(json.dumps(config, indent=4))
     else:
-        tf_cmd_options = commands[host_config['tf_cmd']]
-        # tf_aws_backend_config = f'-backend-config="bucket={}" -backend-config="key={}" -backend-config="region={}"'
-        tf_var_arguments = f"-var=stack_name={stack_config['name']} -var=environment={environment_config['name']}"
-        if stack_config['instance']:
-            tf_var_arguments = tf_var_arguments + f" -var=stack_instance={stack_config['instance']}"
-        tf_var_file_arguments = f"-var-file={stack_config['varfile_path']} -var-file={environment_config['varfile_path']}"
-        tf_arguments = ' '.join([tf_var_arguments, tf_var_file_arguments])
-        cmd_template = build_cmd_template(tf_cmd_options, tf_arguments)
-        cmd_context = build_cmd_context(config)
-        cmd = render(cmd_template, cmd_context)
+        cmd = render_cmd(host_config, stackset_config, stack_config, environment_config)
         print(cmd)
 
 
 """Runs the main() function when this file is executed"""
 if __name__ == '__main__':
-    main(DEFAULTS, TF_COMMANDS, VERSION)
+    main(DEFAULTS, SUB_COMMANDS, VERSION)
