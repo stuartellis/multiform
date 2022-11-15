@@ -50,6 +50,8 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
 - We want to be able to deploy, update and destroy instances of an infrastructure component without changing the state of other components. For example, we want to release updates to an application without changing storage or monitoring components.
 - We may want to deploy some components for a limited time or a specific purpose. For example, we may want to delete test instances of application components on a schedule, or when they are no longer needed, or have instructure components that are only deployed to run performance tests.
 - We may want to be able to manage multiple instances of an infrastructure component in the same cloud account without deploying all of the components. For example, we may want to deploy separate copies of components to develop multiple features in parallel, or as part of a process for recovering data.
+- We want to minimise the size of the Terraform state that is used for each operation. This enables us to run Terraform quickly and safely.
+- We want to manage the Terraform state for all of the components of a project in a consistent way. This enables us to develop and apply tooling, such as using [tfquery](https://github.com/mazen160/tfquery).
 
 ## Design 
 
