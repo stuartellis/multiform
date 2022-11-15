@@ -9,7 +9,7 @@ This script has the following dependencies:
 
 Usage:
 
-    python3 python/utils/utils/multiform.py init -e my-stack -e dev
+    python3 python/utils/utils/multiform.py init -s my-stack -e dev
 
 Help:
 
@@ -55,7 +55,7 @@ VERSION = "0.3.0"
 TF_STACKS_SPEC_VERSION = "0.3.0"
 
 
-"""Default settings, determined by stack specification"""
+"""Default settings"""
 DEFAULTS = {
     'tf_exe': 'terraform',
     'tf_root_dir': 'terraform',
@@ -117,23 +117,11 @@ def build_arg_parser(subcommands, version):
     return parser
 
 
-def build_config(host, stackset, stack, environment):
-    """Creates a configuration"""
-    config = {
-      'host': host,
-      'stackset': stackset,
-      'stack': stack,
-      'environment': environment,
-    }
-    return config
-
-
 def build_environment_config(name, full_path):
-    environment = {
+    return {
         'name': name.lower(),
         'varfile_path': str(full_path),
     }
-    return environment
 
 
 def build_host_config(subcommand, defaults):
@@ -143,10 +131,9 @@ def build_host_config(subcommand, defaults):
 
 
 def build_stackset_config(stackset_path):
-    stackset = {
+    return {
         'full_path': str(stackset_path),
     }
-    return stackset
 
 
 def build_stack_config(stack, instance, stack_path, varfile_path):
@@ -161,20 +148,17 @@ def build_stack_config(stack, instance, stack_path, varfile_path):
 
 def build_cmd_context(config):
     """Creates a context for Terraform commands"""
-    context = flatten_dict(config)
-    return context
+    return flatten_dict(config)
 
 
 def build_cmd_template(cmd_options, arguments):
     """Creates a template for Terraform commands"""
-    cmd_template = f"$host_tf_exe {cmd_options} $host_tf_cmd {arguments}"
-    return cmd_template
+    return f"$host_tf_exe {cmd_options} $host_tf_cmd {arguments}"
 
 
 def build_stack_path(root_path, stackset_dir, stack_name):
     """Returns a Path object for the stack directory"""
-    stack_path = root_path.joinpath(stackset_dir, stack_name)
-    return stack_path
+    return root_path.joinpath(stackset_dir, stack_name)
 
 
 def flatten_dict(init, lkey=''):
@@ -215,17 +199,17 @@ def main(defaults, commands, version):
     environment_path = build_absolute_path(host_config['tf_root_dir'], host_config['stackset_dir'], host_config['stacks_env_dir'], args['environment'], f"{args['stack']}.tfvars")
     environment_config = build_environment_config(args['environment'], environment_path)
 
-    config = build_config(host_config, stackset_config, stack_config, environment_config)
+    config = {'host': host_config, 'stackset': stackset_config, 'stack': stack_config, 'environment': environment_config}
 
     if args['print']:
         print(json.dumps(config, indent=4))
     else:
-        tf_cmd_options = commands[config['host']['tf_cmd']]
+        tf_cmd_options = commands[host_config['tf_cmd']]
         # tf_aws_backend_config = f'-backend-config="bucket={}" -backend-config="key={}" -backend-config="region={}"'
-        tf_var_arguments = f"-var=stack_name={config['stack']['name']} -var=environment={config['environment']['name']}"
-        if config['stack']['instance']:
-            tf_var_arguments = tf_var_arguments + f" -var=stack_instance={config['stack']['instance']}"
-        tf_var_file_arguments = f"-var-file={config['stack']['varfile_path']} -var-file={config['environment']['varfile_path']}"
+        tf_var_arguments = f"-var=stack_name={stack_config['name']} -var=environment={environment_config['name']}"
+        if stack_config['instance']:
+            tf_var_arguments = tf_var_arguments + f" -var=stack_instance={stack_config['instance']}"
+        tf_var_file_arguments = f"-var-file={stack_config['varfile_path']} -var-file={environment_config['varfile_path']}"
         tf_arguments = ' '.join([tf_var_arguments, tf_var_file_arguments])
         cmd_template = build_cmd_template(tf_cmd_options, tf_arguments)
         cmd_context = build_cmd_context(config)
