@@ -90,7 +90,9 @@ The builder is included in this example project whilst it is being developed. It
 
 - Determine whether managing sub-groups of stacks is in scope, with run lists or dependency declaration. A directory with sym links per list may be sufficient.
 - Determine whether to use Terraform workspaces to implement stack instances.
+- Finalise persistence for backend config settings.
 - Standardise path for remote state files.
+- Complete implementation of -backend-config handling. 
 - Define handling of separator characters in identifiers.
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
