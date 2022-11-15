@@ -1,6 +1,6 @@
 # Multiform
 
-Example of a monorepo that includes Terraform with multiple stacks.
+Example of a monorepo that includes Terraform with multiple stacks. Each stack is a Terraform root module.
 
 > /!\ EXPERIMENTAL: This project is under development.
 
@@ -41,20 +41,28 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
 
 ---
 
+## Why?
+
+- We want to define all of the aspects of the infrastructure for a project with Terraform. This may include configurations in multiple cloud services, such as AWS and Datadog.
+- It is more effective to maintain all of the components of a service in one repository. It quickly becomes cumbersome and error-prone to maintain a separate repository for each component of a service. A service is likely to have at least three infrastructure components, and may also have custom application code.
+- We want to be able to deploy, update and destroy instances of an infrastructure component without changing the state of other components. For example, we want to release updates to an application without changing storage or monitoring components.
+- We may want to deploy some components for a limited time or a specific purpose. For example, we may want to delete test instances of application components on a schedule, or when they are no longer needed, or have instructure components that are only deployed to run performance tests.
+- We may want to be able to manage multiple instances of an infrastructure component in the same cloud account without deploying all of the components. For example, we may want to deploy separate copies of components to develop multiple features in parallel, or as part of a process for recovering data.
+
 ## Design 
 
 1. This design enables a project to use multiple Terraform root modules. These root modules are referred to as *stacks*.
 2. The core of the design is a set of conventions for Terraform projects. These consist of an *expected directory structure* and a set of *code conventions for Terraform stacks*.
-3. The settings for a deployment are inferred from the directory structure and Terraform files. This avoids the need to maintain additional configuration.
+3. The settings for a deployment are inferred from the directory structure and Terraform files as much as possible. This reduces the need to maintain additional configuration.
 4. A helper program generates Terraform commands. This *command builder* relies on the conventions to produce a complete Terraform command with the correct options. The command builder returns the Terraform command to the caller as a string. The caller is then responsible for executing the command. The helper program does not execute commands, and does not manage the environment where code is executed.
 5. Each Terraform command that the builder produces executes on a specific Terraform stack, which is defined by the *expected directory structure*.
 6. This example implementation of a project uses a standard set of tools that are provided on current versions of macOS. Linux distributions provide newer versions of the same tools. This means that the project will run on any macOS, WSL or Linux system.
 
 ### Specifications
 
-- Expected directory structure for Terraform - **docs/tf-stacks-spec/0.2.0/terraform-dir-structure.md**
-- Code conventions for Terraform stacks - **docs/tf-stacks-spec/0.2.0/terraform-stack-conventions.md**
-- Terraform command builder - **docs/tf-stacks-spec/0.2.0/terraform-command-builder.md**
+- Expected directory structure for Terraform - **docs/tf-stacks-spec/0.3.0/terraform-dir-structure.md**
+- Code conventions for Terraform stacks - **docs/tf-stacks-spec/0.3.0/terraform-stack-conventions.md**
+- Terraform command builder - **docs/tf-stacks-spec/0.3.0/terraform-command-builder.md**
 
 The specifications are included in this example project whilst it is being developed. It is expected that the specifications will be hosted in a separate repository at a later point in time.
 
