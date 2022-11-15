@@ -22,7 +22,10 @@
 
 ## Terraform Variables
 
-- Each stack uses two sets of variable files: a *global configuration* that applies to all of the stacks in the set for all environments, and a *stack* configuration that is defined per *environment*. This specification limits the number of variable files to two in order to reduce complexity.
+> This specification limits the number of variable files to two in order to reduce complexity.
+
+- Each stack uses two sets of Terraform variable files: a global configuration that applies the stack for all environments, and a configuration that is defined per environment. The global vars file is a *.tfvars* file in *terraform/stacks/environments/all/* with the same name as the stack. Each vars file for an environment is a *.tfvars* file in *terraform/stacks/environments/<environment-name>/* with the same name as the stack.
+- The command builder automatically provides the *stack_name* *stack_instance* as Terraform variables.
 
 ## Terraform State
 

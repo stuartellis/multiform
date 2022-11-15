@@ -1,6 +1,7 @@
 ## Terraform Command Builder 0.3.0
 
 - Each run of the command builder returns the string for a single Terraform command, based on the project files and the input parameters.
+- The command builder provides the *stack_name* and *stack_instance* as Terraform variables.
 - The builder does not read environment variables.
 - The builder does not execute any Terraform commands. 
 - The builder does not create or change any files or state.
