@@ -7,7 +7,3 @@
 - The *terraform/stacks/environments/* directory also contains a subdirectory called *all/*.
 - Code for stacks only references or relies upon files that are under the *terraform/stacks/* directory and subdirectories. They do not rely on any other files or directories.
 - Stacks never use any other directories under the *terraform/* directory except *terraform/stacks/*. This enables co-existance with other tools and solutions.
-
-## TODO
-
-- Define how run order lists are defined for multi-stack runs (a directory with sym links per list may be sufficient).

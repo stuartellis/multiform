@@ -85,3 +85,13 @@ The builder is included in this example project whilst it is being developed. It
 - Dependencies - **docs/project-design/dependencies.md**
 - Upgrade Process - **docs/project-design/managing-upgrades.md**
 - Use of Make - **docs/project-design/use-of-make.md**
+
+## TODOs
+
+- Determine whether managing sub-groups of stacks is in scope, with run lists or dependency declaration. A directory with sym links per list may be sufficient.
+- Determine whether to use Terraform workspaces to implement stack instances.
+- Standardise path for remote state files.
+- Define handling of separator characters in identifiers.
+- Define standard path structure for Parameter Store.
+- Provide guidance on handling of secrets.
+- Improve guidance on cross-stack references.
