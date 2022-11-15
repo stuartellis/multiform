@@ -2,15 +2,17 @@
 
 ## The Definition of a Stack
 
-- Each stack is a Terraform root module that has two variables: *stack_name* and *stack_instance*.
+- Each stack is a Terraform root module that has three variables: *stack_name*, *environment*, and *stack_instance*.
 - The Terraform code and configuration in the stack should be standard Terraform code, compatible with Terraform 1.0.
 - A stack may include Terraform modules.
 
 ## The Required Terraform Variables
 
-- Each stack accepts a *stack_name* variable. This is a string that begins with a lowercase letter, and contains only alphanumeric characters and hyphens. It must have a maximum length of 30 characters.
+- Each stack accepts a *stack_name* variable. This is a string that begins with a letter, and contains only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 30 characters.
 - The *stack_name* variable should have no default value.
-- Each stack accepts a *stack_instance* variable. This is a string that begins with a lowercase letter, and contains only alphanumeric characters and hyphens. It must have a maximum length of 10 characters. The content of the instance identifier is deliberately undefined: it could be a commit hash, release version, ticket ID, or other unique value. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
+- Each stack accepts an *environment* variable. This is a string that begins with a letter, and contains only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. The content of the variable is deliberately undefined.
+- The *environment* variable should have no default value.
+- Each stack accepts a *stack_instance* variable. This is a string that begins with a letter, and contains only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. The content of the instance identifier is deliberately undefined: it could be a commit hash, release version, ticket ID, or other unique value. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
 - The *stack_instance* should have a default value of an empty string.
 - Every resource name is prefixed with the *stack_instance* variable, so that multiple instances of a stack may be deployed to the same cloud account with the same *environment* definition.
 - Guideline: Avoid writing the name of a specific resource type in a stack name or instance identifier, such as *s3*. Use product names and areas of concern.

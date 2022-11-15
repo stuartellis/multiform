@@ -60,7 +60,8 @@ DEFAULTS = {
     'tf_exe': 'terraform',
     'tf_root_dir': 'terraform',
     'stackset_dir': 'stacks',
-    'stacks_def_dir': 'definitions'
+    'stacks_def_dir': 'definitions',
+    'stacks_env_dir': 'environments',
 }
 
 
@@ -76,9 +77,9 @@ TF_COMMANDS = {
 }
 
 
-def build_absolute_path(relative_root_path, sub_path):
+def build_absolute_path(relative_root_path, *sub_paths):
     """Returns an absolute Path object"""
-    relative_path = os.sep.join([relative_root_path, sub_path])
+    relative_path = os.sep.join((relative_root_path,) + (sub_paths))
     path_obj = Path(relative_path)
     return path_obj.absolute()
 
@@ -127,9 +128,10 @@ def build_config(host, stackset, stack, environment):
     return config
 
 
-def build_environment_config(name):
+def build_environment_config(name, full_path):
     environment = {
         'name': name.lower(),
+        'varfile_path': str(full_path),
     }
     return environment
 
@@ -147,11 +149,12 @@ def build_stackset_config(stackset_path):
     return stackset
 
 
-def build_stack_config(stack, instance, stack_path):
+def build_stack_config(stack, instance, stack_path, varfile_path):
     stack_config = {
        'name': stack.lower(),
        'instance': instance.lower(),
        'full_path': str(stack_path),
+       'varfile_path': str(varfile_path),
     }
     return stack_config
 
@@ -162,9 +165,9 @@ def build_cmd_context(config):
     return context
 
 
-def build_cmd_template(cmd_options):
+def build_cmd_template(cmd_options, arguments):
     """Creates a template for Terraform commands"""
-    cmd_template = f"$host_tf_exe {cmd_options} $host_tf_cmd"
+    cmd_template = f"$host_tf_exe {cmd_options} $host_tf_cmd {arguments}"
     return cmd_template
 
 
@@ -206,9 +209,11 @@ def main(defaults, commands, version):
     stackset_config = build_stackset_config(tf_stackset_path)
 
     stack_path = build_stack_path(tf_stackset_path, defaults['stacks_def_dir'], args['stack'])
-    stack_config = build_stack_config(args['stack'], args['instance'], stack_path)
+    stack_varfile_path = build_absolute_path(host_config['tf_root_dir'], host_config['stackset_dir'], host_config['stacks_env_dir'], 'all', f"{args['stack']}.tfvars")
+    stack_config = build_stack_config(args['stack'], args['instance'], stack_path, stack_varfile_path)
 
-    environment_config = build_environment_config(args['environment'])
+    environment_path = build_absolute_path(host_config['tf_root_dir'], host_config['stackset_dir'], host_config['stacks_env_dir'], args['environment'], f"{args['stack']}.tfvars")
+    environment_config = build_environment_config(args['environment'], environment_path)
 
     config = build_config(host_config, stackset_config, stack_config, environment_config)
 
@@ -216,7 +221,13 @@ def main(defaults, commands, version):
         print(json.dumps(config, indent=4))
     else:
         tf_cmd_options = commands[config['host']['tf_cmd']]
-        cmd_template = build_cmd_template(tf_cmd_options)
+        # tf_aws_backend_config = f'-backend-config="bucket={}" -backend-config="key={}" -backend-config="region={}"'
+        tf_var_arguments = f"-var=stack_name={config['stack']['name']} -var=environment={config['environment']['name']}"
+        if config['stack']['instance']:
+            tf_var_arguments = tf_var_arguments + f" -var=stack_instance={config['stack']['instance']}"
+        tf_var_file_arguments = f"-var-file={config['stack']['varfile_path']} -var-file={config['environment']['varfile_path']}"
+        tf_arguments = ' '.join([tf_var_arguments, tf_var_file_arguments])
+        cmd_template = build_cmd_template(tf_cmd_options, tf_arguments)
         cmd_context = build_cmd_context(config)
         cmd = render(cmd_template, cmd_context)
         print(cmd)
