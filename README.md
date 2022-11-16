@@ -1,6 +1,6 @@
 # Multiform
 
-Example of a monorepo that includes Terraform with multiple stacks. Each stack is a Terraform root module.
+Example of a monorepo project with multiple infrastructure components. Each infrastructure component is a separate Terraform root module.
 
 > /!\ EXPERIMENTAL: This project is under development.
 
