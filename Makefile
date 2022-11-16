@@ -36,6 +36,6 @@ info:
 
 ### Stackform Targets
 
-include make/tools/stackform/stackform-cli.mk
+include make/tools/stackform/stackform-py.mk
 
 ###

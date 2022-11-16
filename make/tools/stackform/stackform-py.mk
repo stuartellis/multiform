@@ -1,8 +1,10 @@
-# Terraform Stacks: Make Targets and Variables
+# Terraform Stacks
+#
+# Make targets and variables for Python implementation
 
 STACK_NAME				?= default
 STACK_INSTANCE			?=
-STACK_TF_CMD_BUILDER	= ./python/utils/utils/stackform.py
+STACK_PY_CMD_BUILDER	= ./python/utils/utils/stackform.py
 
 ifdef STACK_INSTANCE
 	TF_STACK_OPTIONS := -i $(STACK_INSTANCE)
@@ -12,7 +14,7 @@ endif
 
 .PHONY: stack-info
 stack-info:
-	@echo "Terraform Command Builder: $(STACK_TF_CMD_BUILDER)"
+	@echo "Terraform Command Builder: $(STACK_PY_CMD_BUILDER)"
 	@echo "Target Environment: $(ENVIRONMENT)"
 	@echo "Target Stack: $(STACK_NAME)"
 	@echo "Target Stack Instance: $(STACK_INSTANCE)"
