@@ -9,8 +9,8 @@ Example of a monorepo that includes Terraform with multiple stacks. Each stack i
 - Bash 4 or above
 - Git 2.32 or above
 - GNU Make 3 or above
-- Python 3.8 or above
 - Terraform 1.x
+- Python 3.8 or above for Python helper script
 
 ## Setup
 
