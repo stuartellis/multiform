@@ -34,9 +34,8 @@ info:
 	@echo "Maintainers: $(PROJECT_MAINTAINERS)"
 	@echo "Target Environment: $(ENVIRONMENT)"
 
-### Multiform Targets
+### Stackform Targets
 
-include make/multiform/stack-core.mk
-include make/multiform/stack-terraform-cli.mk
+include make/tools/stackform/stackform-cli.mk
 
 ###
