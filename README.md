@@ -74,7 +74,7 @@ The specifications are included in this example project whilst it is being devel
 
 The current implementation of the Terraform command builder is here:
 
-- **python/utils/utils/multiform.py**
+- **python/utils/utils/stackform.py**
 
 The Make targets in this project use the command builder. You may also run the command builder yourself.
 
@@ -88,12 +88,11 @@ The builder is included in this example project whilst it is being developed. It
 
 ## TODOs
 
-- Determine whether managing sub-groups of stacks is in scope, with run lists or dependency declaration. A directory with sym links per list may be sufficient.
 - Determine whether to use Terraform workspaces to implement stack instances.
-- Finalise persistence for backend config settings.
+- Standardise backend config settings.
 - Standardise path for remote state files.
-- Complete implementation of -backend-config handling. 
 - Define handling of separator characters in identifiers.
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
+- Provide guidance on executing commands on multiple stacks.
 - Improve guidance on cross-stack references.
