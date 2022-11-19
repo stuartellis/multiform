@@ -66,15 +66,15 @@ DEFAULTS = {
 
 
 """Subcommands"""
-SUB_COMMANDS = {
-  'fmt': 'FIXME',
-  'apply': 'FIXME',
-  'console': 'FIXME',
-  'destroy': 'FIXME',
-  'init': 'FIXME',
-  'plan': 'FIXME',
-  'validate': 'FIXME',
-}
+SUB_COMMANDS = [
+  'fmt',
+  'apply',
+  'console',
+  'destroy',
+  'init',
+  'plan',
+  'validate',
+]
 
 
 def build_absolute_path(relative_root_path, *sub_paths):
@@ -90,7 +90,7 @@ def build_arg_parser(subcommands, version):
         description='Command builder for multi-stack Terraform.')
     parser.add_argument(
         'subcommand', choices=subcommands,
-        help=f"subcommand to run: {', '.join(subcommands.keys())}")
+        help=f"subcommand to run: {', '.join(subcommands)}")
     parser.add_argument(
         '-e', '--environment',
         help='the name of the environment.',
@@ -137,7 +137,7 @@ def build_host_config(subcommand, defaults):
 
 
 def build_instance_config(name, environment_name, stack_name):
-    identifier = name.lower() if name else 'default' 
+    identifier = name.lower() if name else 'default'
     return {
         'name': name.lower(),
         'state_key': '/'.join([environment_name, stack_name, identifier,])
@@ -173,14 +173,22 @@ def load_json(file_path):
 
 def render_tf_cmd(host, stackset, stack, environment, instance):
     """Returns a string for the required Terraform command"""
+
+    cmd_elements = [host['tf_exe']]
+
+    tf_cmd_options = f"-chdir={stack['full_path']}"
+    cmd_elements.append(tf_cmd_options)
+
+    cmd_elements.append(host['tf_cmd'])
+
     tf_var_arguments = f"-var=stack_name={stack['name']} -var=environment={environment['name']}"
     if instance['name']:
         tf_var_arguments = tf_var_arguments + f" -var=stack_instance={stack['instance']}"
     tf_var_file_arguments = f"-var-file={stack['tfvars_file_path']} -var-file={environment['tfvars_file_path']}"
     tf_arguments = ' '.join([tf_var_arguments, tf_var_file_arguments])
-    tf_cmd_options = f"-chdir={stack['full_path']}"
 
-    cmd_elements = [host['tf_exe'], tf_cmd_options, host['tf_cmd'], tf_arguments,]    
+    cmd_elements.append(tf_arguments)
+
     if host['tf_cmd'] == 'init' and not host['backend_type'] == 'DISCONNECTED':
         backend_configs = environment['backend'][host['backend_type']]
         backend_configs['key'] = instance['state_key']
@@ -189,7 +197,7 @@ def render_tf_cmd(host, stackset, stack, environment, instance):
 
     cmd = ' '.join(cmd_elements)
     return cmd
-    
+
 
 def main(defaults, subcommands, version):
     """Main function for running script from the command-line"""
