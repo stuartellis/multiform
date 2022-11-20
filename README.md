@@ -1,6 +1,8 @@
 # Multiform
 
-Example of a monorepo project with multiple infrastructure components. Each infrastructure component is a separate Terraform root module.
+Example of a monorepo project with multiple infrastructure components.
+
+Each infrastructure component is a separate Terraform root module. The project uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces) to support deploying multiple instances of the same component to the same environment.
 
 > /!\ EXPERIMENTAL: This project is under development.
 
@@ -39,16 +41,12 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
 
     make stack-info
     make stack-fmt STACK=example_app
-    make stack-plan STACK=example_app ENVIRONMENT=prod
+    make stack-plan STACK=example_app STACK_INSTANCE=feature1 ENVIRONMENT=prod
 
 ---
 
 ## TODOs
 
-- Determine whether to use Terraform workspaces to implement stack instances.
-- Standardise backend config settings.
-- Standardise path for remote state files.
-- Define handling of separator characters in identifiers.
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
 - Provide guidance on executing commands on multiple stacks.

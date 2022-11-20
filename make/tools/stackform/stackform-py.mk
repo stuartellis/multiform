@@ -2,9 +2,9 @@
 #
 # Make targets and variables for Python implementation
 
-STACK_NAME				?= default
+STACK_NAME				?= base
 STACK_INSTANCE			?=
-STACK_PY_CMD_BUILDER	= ./python/utils/utils/stackform.py
+STACK_PY_CMD_BUILDER	= ./python/utils/stackform/stackform.py
 
 ifdef STACK_INSTANCE
 	TF_STACK_OPTIONS := -i $(STACK_INSTANCE)
@@ -22,4 +22,4 @@ stack-info:
 
 .PHONY: stack-fmt
 stack-fmt:
-	@$(shell python3 $(STACK_TF_CMD_BUILDER) fmt -e $(ENVIRONMENT) -s $(STACK_NAME) $(TF_STACK_OPTIONS))
+	@$(shell python3 $(STACK_PY_CMD_BUILDER) fmt -e $(ENVIRONMENT) -s $(STACK_NAME) $(TF_STACK_OPTIONS))

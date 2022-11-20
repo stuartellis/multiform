@@ -6,7 +6,7 @@ This script requires Python 3.8 or above. It has no other dependencies.
 
 Usage:
 
-    python3 python/utils/utils/stackform.py init -s my-stack -e dev
+    python3 python/utils/stackform/stackform.py init -s my-stack -e dev
 
 Help:
 
@@ -42,21 +42,20 @@ import argparse
 import json
 import os
 from pathlib import Path
-from string import Template
 
 
 """Semantic version of script"""
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 
 
 """Relevant version of Terraform stacks specification"""
-TF_STACKS_SPEC_VERSION = "0.3.0"
+TF_STACKS_SPEC_VERSION = "0.4.0"
 
 
 """Default settings"""
 DEFAULTS = {
     'tf_exe': 'terraform',
-    'tf_root_dir': 'terraform',
+    'tf_root_dir': 'terraform1',
     'stackset_dir': 'stacks',
     'stacks_def_dir': 'definitions',
     'stacks_env_dir': 'environments',
@@ -137,10 +136,18 @@ def build_host_config(subcommand, defaults):
 
 
 def build_instance_config(name, environment_name, stack_name):
-    identifier = name.lower() if name else 'default'
+    prefix = ''
+    workspace = 'default'
+
+    if name:
+        prefix = name.lower() + '-'
+        workspace = name.lower()
+
     return {
         'name': name.lower(),
-        'state_key': '/'.join([environment_name, stack_name, identifier,])
+        'prefix': prefix,
+        'state_key': '/'.join(['stacks', environment_name, stack_name, ]),
+        'workspace': workspace,
     }
 
 
@@ -174,7 +181,10 @@ def load_json(file_path):
 def render_tf_cmd(host, stackset, stack, environment, instance):
     """Returns a string for the required Terraform command"""
 
-    cmd_elements = [host['tf_exe']]
+    cmd_elements = []
+
+    cmd_elements.append(f"TF_WORKSPACE={instance['workspace']}")
+    cmd_elements.append(host['tf_exe'])
 
     tf_cmd_options = f"-chdir={stack['full_path']}"
     cmd_elements.append(tf_cmd_options)
@@ -182,8 +192,8 @@ def render_tf_cmd(host, stackset, stack, environment, instance):
     cmd_elements.append(host['tf_cmd'])
 
     tf_var_arguments = f"-var=stack_name={stack['name']} -var=environment={environment['name']}"
-    if instance['name']:
-        tf_var_arguments = tf_var_arguments + f" -var=stack_instance={stack['instance']}"
+    if instance['prefix']:
+        tf_var_arguments = tf_var_arguments + f" -var=instance_prefix={instance['prefix']}"
     tf_var_file_arguments = f"-var-file={stack['tfvars_file_path']} -var-file={environment['tfvars_file_path']}"
     tf_arguments = ' '.join([tf_var_arguments, tf_var_file_arguments])
 
@@ -199,11 +209,12 @@ def render_tf_cmd(host, stackset, stack, environment, instance):
     return cmd
 
 
-def main(defaults, subcommands, version):
+def main(defaults, subcommands, version, stacks_spec_version):
     """Main function for running script from the command-line"""
     parser = build_arg_parser(subcommands, version)
     args = vars(parser.parse_args())
     settings = defaults
+    settings['stacks_spec_version'] = stacks_spec_version
     if args['disconnected']:
         settings['backend_type'] = 'DISCONNECTED'
     host_config = build_host_config(args['subcommand'], settings)
@@ -232,4 +243,4 @@ def main(defaults, subcommands, version):
 
 """Runs the main() function when this file is executed"""
 if __name__ == '__main__':
-    main(DEFAULTS, SUB_COMMANDS, VERSION)
+    main(DEFAULTS, SUB_COMMANDS, VERSION, TF_STACKS_SPEC_VERSION)
