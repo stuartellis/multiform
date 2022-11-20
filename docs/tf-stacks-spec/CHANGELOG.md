@@ -7,6 +7,16 @@ and this specification adheres to [Semantic Versioning](https://semver.org/spec/
 
 ## [Unreleased]
 
+## [0.3.0] - 2022-11-15
+
+### Added
+
+- Add specification for environments.
+
+### Changed
+
+- Split conventions into requirements and guidelines.
+
 ## [0.2.0] - 2022-11-14
 
 ### Added
