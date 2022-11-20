@@ -83,9 +83,9 @@ The builder is included in this example project whilst it is being developed. It
 
 ### Design of Example Project
 
-- Dependencies - **docs/project-design/dependencies.md**
-- Upgrade Process - **docs/project-design/managing-upgrades.md**
-- Use of Make - **docs/project-design/use-of-make.md**
+- Dependencies - **docs/design/project-dependencies.md**
+- Upgrade Process - **docs/design/project-upgrades.md**
+- Use of Make - **docs/design/project-use-of-make.md**
 
 ## TODOs
 
