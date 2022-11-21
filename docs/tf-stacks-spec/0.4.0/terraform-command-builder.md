@@ -1,4 +1,4 @@
-## Terraform Command Builder 0.4.0
+# Terraform Command Builder - Version 0.4.0
 
 - The command builder provides the *stack_name*, *environment* and *instance_prefix* as Terraform variables.
 

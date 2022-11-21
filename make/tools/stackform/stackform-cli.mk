@@ -1,5 +1,5 @@
 SF_STACKS_SPEC_VERSION	:= 0.4.0
-SF_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/$(SF_STACKS_SPEC_VERSION)
+SF_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/$(SF_STACKS_SPEC_VERSION)/README.md
 
 SF_STACKS_DIR		:= $(PROJECT_DIR)/terraform1/stacks
 
