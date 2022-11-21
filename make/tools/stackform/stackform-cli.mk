@@ -1,14 +1,16 @@
 SF_STACKS_SPEC_VERSION	:= 0.4.0
 SF_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/$(SF_STACKS_SPEC_VERSION)
 
-SF_BACKEND_FILE		:= $(PROJECT_DIR)/terraform1/stacks/environments/$(ENVIRONMENT)/backend.json
+SF_STACKS_DIR		:= $(PROJECT_DIR)/terraform1/stacks
+
+SF_BACKEND_FILE		:= $(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/backend.json
 SF_REMOTE_REGION 	:= $(shell jq '.aws.region' $(SF_BACKEND_FILE))
 SF_REMOTE_BUCKET 	:= $(shell jq '.aws.bucket' $(SF_BACKEND_FILE))
 SF_REMOTE_DDB_TABLE := $(shell jq '.aws.dynamodb_table' $(SF_BACKEND_FILE))
 SF_REMOTE_BACKEND 	:= -backend-config=region=$(SF_REMOTE_REGION) -backend-config=bucket=$(SF_REMOTE_BUCKET) -backend-config=key=stacks/$(ENVIRONMENT)/$(STACK_NAME) -backend-config=dynamodb_table=$(SF_REMOTE_DDB_TABLE)
 
-SF_WORKING_DIR	:= -chdir=$(PROJECT_DIR)/terraform1/stacks/definitions/$(STACK_NAME)
-SF_VAR_FILES	:= -var-file=$(PROJECT_DIR)/terraform1/stacks/environments/all/$(STACK_NAME).tfvars -var-file=$(PROJECT_DIR)/terraform1/stacks/environments/$(ENVIRONMENT)/$(STACK_NAME).tfvars
+SF_WORKING_DIR	:= -chdir=$(SF_STACKS_DIR)/definitions/$(STACK_NAME)
+SF_VAR_FILES	:= -var-file=$(SF_STACKS_DIR)/environments/all/$(STACK_NAME).tfvars -var-file=$(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/$(STACK_NAME).tfvars
 
 ifdef STACK_INSTANCE
 	SF_WORKSPACE := $(STACK_INSTANCE)
