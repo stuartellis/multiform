@@ -2,6 +2,7 @@
 #
 # Makefile targets and variables
 
+SF_STACKS_TOOLS_VERSION	:= 0.4.0
 SF_STACKS_SPEC_VERSION	:= 0.4.0
 SF_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/$(SF_STACKS_SPEC_VERSION)/README.md
 
@@ -28,6 +29,7 @@ endif
 
 .PHONY: stack-info
 stack-info:
+	@echo "Stacks Tools Version: $(SF_STACKS_TOOLS_VERSION)"
 	@echo "Stacks Specification Version: $(SF_STACKS_SPEC_VERSION)"
 	@echo "Stacks Specification URL: $(SF_STACKS_SPEC_URL)"
 	@echo "Stacks Directory: $(SF_STACKS_DIR)"
