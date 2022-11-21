@@ -1,5 +1,9 @@
 # Conventions for a Terraform Stack - Version 0.4.0
 
+This design enables a project to include multiple Terraform root modules. These root modules are referred to as *stacks*.
+
+It also enables you to use [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces) to deploy multiple instances of the same component to the same environment.
+
 ## The Definition of a Stack
 
 - Each stack is a Terraform root module that has three variables: *stack_name*, *environment*, and *instance_prefix*.
@@ -39,22 +43,35 @@
 
 ### Terraform Var Files
 
-> This specification limits the number of variable files to two in order to reduce complexity.
-
 #### Global
 
-- A global configuration that applies the stack for all environments. The global vars file is a *.tfvars* file in *terraform1/stacks/environments/all/* with the same name as the stack. 
+- A global configuration that applies to a stack in all environments. The global vars file is a *.tfvars* file in *terraform1/stacks/environments/all/* with the same name as the stack. 
 
 #### Per-Environment
 
 - Each vars file for an environment is a *.tfvars* file in *terraform1/stacks/environments/environment_name* with the same name as the stack.
 
-### Terraform Backend Configuration
+### Backend Configuration
+
+#### Files
 
 - Tools read the settings for the backend from a JSON file. Each environment has a *backend.json* file in the relevant subdirectory in *environments/* subdirectory.
 - A *backend.json* file has an entry for the cloud provider. For AWS, this is *aws*.
 - The entry for the cloud provider should contain the required items. For AWS, these items are *bucket*, *region* and *dynamodb_table*.
 - The *key* should use the format */stacks/environment_name/stack_name*
+
+#### Terraform *backend*
+
+- Each stack should use the *s3* remote state backend.
+- The backend should declare a *workspace_key_prefix* with the value *workspaces*. Provide all other settings when Terraform runs.
+
+Here is an example:
+
+```terraform
+backend "s3" {
+    workspace_key_prefix = "workspaces"
+  }
+```
 
 ---
 
@@ -68,13 +85,11 @@
 ### Terraform Providers
 
 - A stack may use multiple providers.
-- Guideline: each stack should have one provider for a cloud service. If you have multiple providers for cloud services in the same stack, consider separating the resources into separate stacks.
+- Each stack should have one provider for a cloud service. If you have multiple providers for cloud services in the same stack, consider separating the resources into separate stacks.
 
 ### Terraform State
 
-- Each stack should use a remote state backend.
-- No values for remote state should be defined in the Terraform code. Each stack will have a separate Terraform state file per environment and stack instance. This configuration should be provided when a Terraform command is run. 
-- Avoid references to remote Terraform state, so that instances of a stack do not have dependencies on the state of other Terraform deployments
+- Avoid references to other remote Terraform states, so that instances of a stack do not have dependencies on the state of other Terraform deployments
 
 ### Terraform Resources
 

@@ -14,6 +14,7 @@ and this specification adheres to [Semantic Versioning](https://semver.org/spec/
 
 ### Changed
 
+- Consolidate specification into one *README.md* file.
 - Change root directory for Terraform code from *terraform/* to *terraform1/* to avoid conflicts.
 
 ## [0.3.0] - 2022-11-15
