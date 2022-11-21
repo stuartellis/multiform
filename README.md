@@ -9,7 +9,7 @@ Each infrastructure component is a separate Terraform root module. The project u
 ## Dependencies
 
 - Terraform 1.x
-- Makefile implementation: *Bash* 3, *GNU Make* 3, *jq*
+- Makefile implementation: A UNIX shell, *GNU Make* 3, *jq*
 - Python implementation: Python 3.8 or above
 
 ## Setup
