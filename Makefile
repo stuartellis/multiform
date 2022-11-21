@@ -14,6 +14,9 @@ MAKEFLAGS += --no-builtin-rules
 
 PROJECT_NAME			?= multiform
 PROJECT_MAINTAINERS		?= FIXME
+PROJECT_DIR				:= $(shell pwd)
+STACK_NAME				?= example_app
+STACK_INSTANCE			?=
 ENVIRONMENT				?= dev
 
 # Default Target
@@ -36,6 +39,7 @@ info:
 
 ### Stackform Targets
 
+include make/tools/stackform/stackform-cli.mk
 include make/tools/stackform/stackform-py.mk
 
 ###

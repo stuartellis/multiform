@@ -197,7 +197,8 @@ def render_tf_cmd(host, stackset, stack, environment, instance):
     tf_var_file_arguments = f"-var-file={stack['tfvars_file_path']} -var-file={environment['tfvars_file_path']}"
     tf_arguments = ' '.join([tf_var_arguments, tf_var_file_arguments])
 
-    cmd_elements.append(tf_arguments)
+    if host['tf_cmd'] != 'fmt':
+        cmd_elements.append(tf_arguments)
 
     if host['tf_cmd'] == 'init' and not host['backend_type'] == 'DISCONNECTED':
         backend_configs = environment['backend'][host['backend_type']]
