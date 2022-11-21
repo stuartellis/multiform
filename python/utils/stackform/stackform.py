@@ -136,16 +136,16 @@ def build_host_config(subcommand, defaults):
 
 
 def build_instance_config(name, environment_name, stack_name):
-    identifier = ''
+    variant = ''
     workspace = 'default'
 
     if name:
-        identifier = name.lower() + '-'
+        variant = name.lower()
         workspace = name.lower()
 
     return {
         'name': name.lower(),
-        'identifier': identifier,
+        'variant': variant,
         'state_key': '/'.join(['stacks', environment_name, stack_name, ]),
         'workspace': workspace,
     }
@@ -192,8 +192,8 @@ def render_tf_cmd(host, stackset, stack, environment, instance):
     cmd_elements.append(host['tf_cmd'])
 
     tf_var_arguments = f"-var=stack_name={stack['name']} -var=environment={environment['name']}"
-    if instance['identifier']:
-        tf_var_arguments = tf_var_arguments + f" -var=instance_identifier={instance['identifier']}"
+    if instance['variant']:
+        tf_var_arguments = tf_var_arguments + f" -var=instance_variant={instance['variant']}"
     tf_var_file_arguments = f"-var-file={stack['tfvars_file_path']} -var-file={environment['tfvars_file_path']}"
     tf_arguments = ' '.join([tf_var_arguments, tf_var_file_arguments])
 

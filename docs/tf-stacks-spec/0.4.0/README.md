@@ -38,7 +38,7 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 
 #### variant
 
-- Each stack accepts a *variant* variable. This is a string that begins with a letter and ends with a hyphen. It should contain only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
+- Each stack accepts a *variant* variable. This is a string that begins with a letter. It should contain only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
 - The *variant* should have a default value of an empty string.
 - If you are using a Terraform workspace, the *variant* should be the name of the workspace. 
 
