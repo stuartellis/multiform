@@ -47,14 +47,14 @@
 
 #### Per-Environment
 
-- Each vars file for an environment is a *.tfvars* file in *terraform1/stacks/environments/<environment-name>/* with the same name as the stack.
+- Each vars file for an environment is a *.tfvars* file in *terraform1/stacks/environments/environment_name* with the same name as the stack.
 
 ### Terraform Backend Configuration
 
 - Tools read the settings for the backend from a JSON file. Each environment has a *backend.json* file in the relevant subdirectory in *environments/* subdirectory.
 - A *backend.json* file has an entry for the cloud provider. For AWS, this is *aws*.
 - The entry for the cloud provider should contain the required items. For AWS, these items are *bucket*, *region* and *dynamodb_table*.
-- The *key* should use the format */stacks/<environment_name>/<stack_name>*
+- The *key* should use the format */stacks/environment_name/stack_name*
 
 ---
 
