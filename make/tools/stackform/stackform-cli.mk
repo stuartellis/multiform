@@ -2,7 +2,7 @@
 #
 # Makefile targets and variables
 #
-# Requirements: A UNIX shell, GNU Make 3 or above and jq
+# Requirements: A UNIX shell, jq, GNU Make 3 or above
 #
 # Terraform variables: stack_name, environment, instance_prefix
 #
@@ -24,13 +24,17 @@ SF_VAR_FILES	:= -var-file=$(SF_STACKS_DIR)/environments/all/$(STACK_NAME).tfvars
 
 ifdef STACK_INSTANCE
 	SF_WORKSPACE := $(STACK_INSTANCE)
-	SF_INSTANCE_ID := $(SF_WORKSPACE)
-	SF_VARS := -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)" -var="instance_id=$(SF_INSTANCE_ID)"
+	SF_VARIANT_ID := $(SF_WORKSPACE)
+	SF_VARS := -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)" -var="variant=$(SF_VARIANT_ID)"
 else
 	SF_WORKSPACE := default
-	SF_INSTANCE_ID :=
+	SF_VARIANT_ID :=
 	SF_VARS := -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)"
 endif
+
+SF_CMD := TF_WORKSPACE=$(SF_WORKSPACE) terraform
+
+## Targets
 
 .PHONY: stack-info
 stack-info:
@@ -41,32 +45,32 @@ stack-info:
 	@echo "Environment: $(ENVIRONMENT)"
 	@echo "Stack: $(STACK_NAME)"
 	@echo "Terraform Workspace: $(SF_WORKSPACE)"
-	@echo "Stack Instance Identifier: $(SF_INSTANCE_ID)"
+	@echo "Stack Variant Identifier: $(SF_VARIANT_ID)"
 
 .PHONY: stack-apply
 stack-apply: stack-plan
-	TF_WORKSPACE=$(SF_WORKSPACE) terraform $(SF_WORKING_DIR) apply -auto-approve $(SF_VARS) $(SF_VAR_FILES)
+	$(SF_CMD) $(SF_WORKING_DIR) apply -auto-approve $(SF_VARS) $(SF_VAR_FILES)
 
 .PHONY: stack-console
 stack-console: stack-plan
-	TF_WORKSPACE=$(SF_WORKSPACE) terraform $(SF_WORKING_DIR) console $(SF_VARS) $(SF_VAR_FILES)
+	$(SF_CMD) $(SF_WORKING_DIR) console $(SF_VARS) $(SF_VAR_FILES)
 
 .PHONY: stack-destroy
 stack-destroy: stack-plan
-	TF_WORKSPACE=$(SF_WORKSPACE) terraform $(SF_WORKING_DIR) destroy $(SF_VARS) $(SF_VAR_FILES)
+	$(SF_CMD) $(SF_WORKING_DIR) destroy $(SF_VARS) $(SF_VAR_FILES)
 
 .PHONY: stack-fmt
 stack-fmt:
-	@terraform $(SF_WORKING_DIR) fmt
+	$(SF_CMD) $(SF_WORKING_DIR) fmt
 
 .PHONY: stack-init
 stack-init:
-	@terraform $(SF_WORKING_DIR) init $(SF_REMOTE_BACKEND)
+	$(SF_CMD) $(SF_WORKING_DIR) init $(SF_REMOTE_BACKEND)
 
 .PHONY: stack-plan
 stack-plan: stack-validate
-	TF_WORKSPACE=$(SF_WORKSPACE) terraform $(SF_WORKING_DIR) plan $(SF_VARS) $(SF_VAR_FILES)
+	$(SF_CMD) $(SF_WORKING_DIR) plan $(SF_VARS) $(SF_VAR_FILES)
 
 .PHONY: stack-validate
 stack-validate:
-	TF_WORKSPACE=$(SF_WORKSPACE) terraform $(SF_WORKING_DIR) validate
+	$(SF_CMD) $(SF_WORKING_DIR) validate

@@ -6,7 +6,7 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 
 ## The Definition of a Stack
 
-- Each stack is a Terraform root module that has three variables: *stack_name*, *environment*, and *instance_id*.
+- Each stack is a Terraform root module that has three variables: *stack_name*, *environment*, and *variant*.
 - The Terraform code and configuration in the stack should be standard Terraform code, compatible with Terraform 1.0.
 - A stack may include Terraform modules.
 
@@ -36,11 +36,11 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 - Each stack accepts an *environment* variable. This is a string that begins with a letter, and contains only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. The content of the variable is deliberately undefined.
 - The *environment* variable should have no default value.
 
-#### instance_id
+#### variant
 
-- Each stack accepts a *instance_id* variable. This is a string that begins with a letter and end with a hyphen. It should contain only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
-- The *instance_id* should have a default value of an empty string.
-- If you are using a Terraform workspace, the *instance_id* should be the name of the workspace. 
+- Each stack accepts a *variant* variable. This is a string that begins with a letter and ends with a hyphen. It should contain only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
+- The *variant* should have a default value of an empty string.
+- If you are using a Terraform workspace, the *variant* should be the name of the workspace. 
 
 ### Terraform Var Files
 
@@ -94,7 +94,7 @@ backend "s3" {
 
 ### Terraform Resources
 
-- Every resource name is prefixed with the *instance_id* variable, so that multiple instances of a stack may be deployed to the same cloud account with the same *environment* definition.
+- Every resource name is prefixed with the *variant* variable, so that multiple instances of a stack may be deployed to the same cloud account with the same *environment* definition.
 
 ### AWS
 
