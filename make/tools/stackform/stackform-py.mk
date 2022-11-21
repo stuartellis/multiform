@@ -1,6 +1,6 @@
 # Terraform Stacks
 #
-# Make targets and variables for Python implementation
+# Example Make targets and variables for Python implementation
 
 STACK_PY_CMD_BUILDER	= ./python/utils/stackform/stackform.py
 

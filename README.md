@@ -45,7 +45,9 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
 
 ## TODOs
 
+- Improve jq to read backend file only once.
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
 - Provide guidance on executing commands on multiple stacks.
 - Improve guidance on cross-stack references.
+- Add self-update for stackform assets

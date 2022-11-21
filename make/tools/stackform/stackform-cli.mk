@@ -1,3 +1,7 @@
+# Terraform Stacks
+#
+# Makefile targets and variables
+
 SF_STACKS_SPEC_VERSION	:= 0.4.0
 SF_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/$(SF_STACKS_SPEC_VERSION)/README.md
 
@@ -24,12 +28,12 @@ endif
 
 .PHONY: stack-info
 stack-info:
-	@echo "Terraform Command Builder: Makefile"
 	@echo "Stacks Specification Version: $(SF_STACKS_SPEC_VERSION)"
 	@echo "Stacks Specification URL: $(SF_STACKS_SPEC_URL)"
+	@echo "Stacks Directory: $(SF_STACKS_DIR)"
 	@echo "Target Environment: $(ENVIRONMENT)"
 	@echo "Target Stack: $(STACK_NAME)"
-	@echo "Target Workspace: $(SF_WORKSPACE)"
+	@echo "Target Terraform Workspace: $(SF_WORKSPACE)"
 	@echo "Stack Instance Prefix: $(SF_STACK_PREFIX)"
 
 .PHONY: stack-apply
