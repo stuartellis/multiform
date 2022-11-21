@@ -8,11 +8,9 @@ Each infrastructure component is a separate Terraform root module. The project u
 
 ## Dependencies
 
-- Bash 4 or above
-- Git 2.32 or above
-- GNU Make 3 or above
 - Terraform 1.x
-- Python 3.8 or above for Python helper script
+- Makefile implementation: *Bash* 3, *GNU Make* 3, *jq*
+- Python implementation: Python 3.8 or above
 
 ## Setup
 
