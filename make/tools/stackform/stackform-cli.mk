@@ -2,7 +2,9 @@
 #
 # Makefile targets and variables
 #
-# Requirements: A UNIX shell, GNU Make 3 or above, jq
+# Requirements: A UNIX shell, GNU Make 3 or above and jq
+#
+# Terraform variables: stack_name, environment, instance_prefix
 #
 
 SF_STACKS_TOOLS_VERSION	:= 0.4.0
@@ -22,11 +24,11 @@ SF_VAR_FILES	:= -var-file=$(SF_STACKS_DIR)/environments/all/$(STACK_NAME).tfvars
 
 ifdef STACK_INSTANCE
 	SF_WORKSPACE := $(STACK_INSTANCE)
-	SF_STACK_PREFIX := $(SF_WORKSPACE)-
-	SF_VARS := -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)" -var="instance_prefix=$(SF_STACK_PREFIX)"
+	SF_INSTANCE_ID := $(SF_WORKSPACE)
+	SF_VARS := -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)" -var="instance_id=$(SF_INSTANCE_ID)"
 else
 	SF_WORKSPACE := default
-	SF_STACK_PREFIX :=
+	SF_INSTANCE_ID :=
 	SF_VARS := -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)"
 endif
 
@@ -36,10 +38,10 @@ stack-info:
 	@echo "Stacks Specification Version: $(SF_STACKS_SPEC_VERSION)"
 	@echo "Stacks Specification URL: $(SF_STACKS_SPEC_URL)"
 	@echo "Stacks Directory: $(SF_STACKS_DIR)"
-	@echo "Target Environment: $(ENVIRONMENT)"
-	@echo "Target Stack: $(STACK_NAME)"
-	@echo "Target Terraform Workspace: $(SF_WORKSPACE)"
-	@echo "Stack Instance Prefix: $(SF_STACK_PREFIX)"
+	@echo "Environment: $(ENVIRONMENT)"
+	@echo "Stack: $(STACK_NAME)"
+	@echo "Terraform Workspace: $(SF_WORKSPACE)"
+	@echo "Stack Instance Identifier: $(SF_INSTANCE_ID)"
 
 .PHONY: stack-apply
 stack-apply: stack-plan

@@ -6,10 +6,9 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 
 ## The Definition of a Stack
 
-- Each stack is a Terraform root module that has three variables: *stack_name*, *environment*, and *instance_prefix*.
+- Each stack is a Terraform root module that has three variables: *stack_name*, *environment*, and *instance_id*.
 - The Terraform code and configuration in the stack should be standard Terraform code, compatible with Terraform 1.0.
 - A stack may include Terraform modules.
-- Avoid writing the name of a specific resource type in a stack name or instance identifier, such as *s3*. Use product names and areas of concern.
 
 ---
 
@@ -30,16 +29,18 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 
 - Each stack accepts a *stack_name* variable. This is a string that begins with a letter, and contains only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 30 characters.
 - The *stack_name* variable should have no default value.
+- The *stack_name* should start with the name of the project.
 
 #### environment
 
 - Each stack accepts an *environment* variable. This is a string that begins with a letter, and contains only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. The content of the variable is deliberately undefined.
 - The *environment* variable should have no default value.
 
-#### instance_prefix
+#### instance_id
 
-- Each stack accepts a *instance_prefix* variable. This is a string that begins with a letter and end with a hyphen. It should contain only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. If you are using Terraform workspaces, the *instance_prefix* should be the name of the workspace followed by a hyphen. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
-- The *instance_prefix* should have a default value of an empty string.
+- Each stack accepts a *instance_id* variable. This is a string that begins with a letter and end with a hyphen. It should contain only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
+- The *instance_id* should have a default value of an empty string.
+- If you are using a Terraform workspace, the *instance_id* should be the name of the workspace. 
 
 ### Terraform Var Files
 
@@ -93,7 +94,7 @@ backend "s3" {
 
 ### Terraform Resources
 
-- Every resource name is prefixed with the *instance_prefix* variable, so that multiple instances of a stack may be deployed to the same cloud account with the same *environment* definition.
+- Every resource name is prefixed with the *instance_id* variable, so that multiple instances of a stack may be deployed to the same cloud account with the same *environment* definition.
 
 ### AWS
 
