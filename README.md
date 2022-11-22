@@ -35,6 +35,8 @@ include make/tools/stackform/stackform-tools-container.mk
 
 > This does not interfere with any other use of Make. All of the targets and variables in the *mk* files are namespaced.
 
+All of the files for Terraform are in the directory *terraform1/*. Any other directories that contain Terraform code are ignored.
+
 The implementation references this external URL:
 
 https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/0.4.0/README.md
