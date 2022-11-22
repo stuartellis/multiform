@@ -16,7 +16,7 @@ The implementation consists of these three files:
 
 The following variables and includes must be present in the main Makefile:
 
-```
+```make
 ### Stackform
 
 PROJECT_DIR		:= $(shell pwd)
