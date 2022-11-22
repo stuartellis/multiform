@@ -35,7 +35,7 @@ RUN curl -L https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/terrafor
 FROM base AS app
 
 RUN addgroup appusers \
-  && adduser -s /bin/bash -D -H appuser appusers
+  && adduser -s /bin/sh -D -H appuser appusers
 
 COPY --from=builder --chown=appuser:appusers /usr/local/bin /usr/local/bin
 WORKDIR /usr/local/bin
