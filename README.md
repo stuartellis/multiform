@@ -14,7 +14,7 @@ The implementation consists of these three files:
 - make/tools/stackform/stackform-tools-container.mk
 - docker/stackform-tools.dockerfile
 
-The following lines must be present in the main Makefile:
+The following variables and includes must be present in the main Makefile:
 
 ```
 ### Stackform
