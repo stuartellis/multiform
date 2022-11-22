@@ -23,7 +23,7 @@ The following *variables* and *includes* must be present in the main Makefile:
 
 PROJECT_DIR		:= $(shell pwd)
 STACK_NAME		?= example_app
-STACK_INSTANCE  ?=
+STACK_VARIANT  ?=
 ENVIRONMENT		?= dev
 DOCKER_HOST     ?= true
 
@@ -75,7 +75,10 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
 
     make stack-info
     make stack-fmt STACK_NAME=example_app
-    make stack-plan STACK_NAME=example_app STACK_INSTANCE=feature1 ENVIRONMENT=prod
+
+Specify *STACK_VARIANT* to create an alternate deployment of the same stack in the same environment. This feature uses Terraform workspaces:
+
+    make stack-plan STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=prod
 
 By default, all commands apart from *stack-info* run in a container. To run without a container, set *DOCKER_HOST=false*. For example:
 

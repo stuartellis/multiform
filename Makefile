@@ -17,7 +17,7 @@ MAKEFLAGS += --no-builtin-rules
 
 PROJECT_DIR				:= $(shell pwd)
 STACK_NAME				?= example_app
-STACK_INSTANCE			?=
+STACK_VARIANT			?=
 ENVIRONMENT				?= dev
 DOCKER_HOST				?= true
 

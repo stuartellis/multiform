@@ -34,8 +34,8 @@ SF_REMOTE_BACKEND 	:= -backend-config=region=$(SF_REMOTE_REGION) -backend-config
 SF_WORKING_DIR	:= -chdir=$(SF_STACKS_DIR)/definitions/$(STACK_NAME)
 SF_VAR_FILES	:= -var-file=$(SF_STACKS_DIR)/environments/all/$(STACK_NAME).tfvars -var-file=$(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/$(STACK_NAME).tfvars
 
-ifdef STACK_INSTANCE
-	SF_WORKSPACE := $(STACK_INSTANCE)
+ifdef STACK_VARIANT
+	SF_WORKSPACE := $(STACK_VARIANT)
 	SF_VARIANT_ID := $(SF_WORKSPACE)
 	SF_VARS := -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)" -var="variant=$(SF_VARIANT_ID)"
 else
