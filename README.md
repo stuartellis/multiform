@@ -76,9 +76,11 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
     make stack-info
     make stack-fmt STACK_NAME=example_app
 
-Specify *STACK_VARIANT* to create an alternate deployment of the same stack in the same environment. This feature uses Terraform workspaces:
+Specify *STACK_VARIANT* to create an alternate deployment of the same stack in the same environment:
 
-    make stack-plan STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=prod
+    make stack-plan STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=dev
+
+> The variants feature uses Terraform workspaces.
 
 By default, all commands apart from *stack-info* run in a container. To run without a container, set *DOCKER_HOST=false*. For example:
 
