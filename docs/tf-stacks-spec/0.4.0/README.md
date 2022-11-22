@@ -27,18 +27,32 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 
 #### stack_name
 
-- Each stack accepts a *stack_name* variable. This is a string that begins with a letter, and contains only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 30 characters.
+The unique name of the stack. The *stack_name* should start with the name of the project.
+
+- Each stack accepts a *stack_name* variable. 
+- This variable is a string that begins with a letter
+- It must contains only alphanumeric characters and hyphens. Characters must be in lowercase. 
+- It must have a maximum length of 30 characters.
 - The *stack_name* variable should have no default value.
-- The *stack_name* should start with the name of the project.
 
 #### environment
 
-- Each stack accepts an *environment* variable. This is a string that begins with a letter, and contains only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. The content of the variable is deliberately undefined.
+The environment where the stack is deployed.
+
+- Each stack accepts an *environment* variable. 
+- This variable is a string that begins with a letter.
+- It must contain only alphanumeric characters and hyphens. Characters must be in lowercase.
+- It must have a maximum length of 10 characters.
 - The *environment* variable should have no default value.
 
 #### variant
 
-- Each stack accepts a *variant* variable. This is a string that begins with a letter. It should contain only alphanumeric characters and hyphens. Characters must be in lowercase. It must have a maximum length of 10 characters. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
+The *variant* is an identifier for a specific instance of a stack. It is an empty string for the original or default instance of a stack. This enables various use cases, such as testing, blue-green deployment and disaster recovery.
+
+- Each stack accepts a *variant* variable. 
+- This variable is a string that begins with a letter. 
+- It must contain only alphanumeric characters and hyphens. Characters must be in lowercase. 
+- It must have a maximum length of 10 characters.
 - The *variant* should have a default value of an empty string.
 - If you are using a Terraform workspace, the *variant* should be the name of the workspace. 
 

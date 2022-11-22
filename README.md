@@ -6,11 +6,42 @@ Each infrastructure component is a separate Terraform root module. The project u
 
 > /!\ EXPERIMENTAL: This project is under development.
 
+## Reuse
+
+The implementation consists of these three files:
+
+- make/tools/stackform/stackform-cli.mk
+- make/tools/stackform/stackform-tools-container.mk
+- docker/stackform-tools.dockerfile
+
+The following lines must be present in the main Makefile:
+
+```
+### Stackform
+
+PROJECT_DIR				:= $(shell pwd)
+STACK_NAME				?= example_app
+STACK_INSTANCE			?=
+ENVIRONMENT				?= dev
+DOCKER_HOST				?= true
+
+include make/tools/stackform/stackform-cli.mk
+include make/tools/stackform/stackform-tools-container.mk
+
+###
+```
+
+It references this external URL:
+
+https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/0.4.0/README.md
+
 ## Dependencies
 
 - Terraform 1.x
 - Makefile implementation: A UNIX shell, *GNU Make* 3, *jq*
-- Python implementation: Python 3.8 or above
+- OPTIONAL: Docker
+
+The Python implementation requires Python 3.8 or above
 
 ## Setup
 
@@ -22,24 +53,29 @@ To use a development container with Visual Studio Code:
 2. Ensure that the **Dev Containers** extension is installed on Visual Studio Code
 3. Open the project as a folder in Visual Studio Code
 4. Accept the option to reopen the project in a container when prompted.
+5. Run *make stacktools-build* to create the Docker container for the tools
 
 ## Usage
 
 Use Make to run the appropriate tasks.
 
-The *info* task provides current settings:
+The *stacktools-build* target creates a Docker container image for the tools to use:
 
-    make info
+    make stacktools-build
 
-Use *make clean* to delete all generated files:
+To build for another CPU architecture, override STACKTOOLS_TARGET_CPU_ARCH. For example, use arm64 for ARM:
 
-    make clean
+    make stacktools-build STACKTOOLS_TARGET_CPU_ARCH=arm64
 
 Make targets for Terraform stacks use the prefix *stack-*. For example:
 
     make stack-info
     make stack-fmt STACK_NAME=example_app
     make stack-plan STACK_NAME=example_app STACK_INSTANCE=feature1 ENVIRONMENT=prod
+
+By default, all commands apart from *stack-info* run in a container. To run without a container, set *DOCKER_HOST=false*. For example:
+
+    make stack-fmt STACK_NAME=example_app DOCKER_HOST=false
 
 ---
 

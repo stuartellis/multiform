@@ -193,7 +193,7 @@ def render_tf_cmd(host, stackset, stack, environment, instance):
 
     tf_var_arguments = f"-var=stack_name={stack['name']} -var=environment={environment['name']}"
     if instance['variant']:
-        tf_var_arguments = tf_var_arguments + f" -var=instance_variant={instance['variant']}"
+        tf_var_arguments = tf_var_arguments + f" -var=variant={instance['variant']}"
     tf_var_file_arguments = f"-var-file={stack['tfvars_file_path']} -var-file={environment['tfvars_file_path']}"
     tf_arguments = ' '.join([tf_var_arguments, tf_var_file_arguments])
 

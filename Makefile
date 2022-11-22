@@ -19,7 +19,9 @@ PROJECT_DIR				:= $(shell pwd)
 STACK_NAME				?= example_app
 STACK_INSTANCE			?=
 ENVIRONMENT				?= dev
+DOCKER_HOST				?= true
 
 include make/tools/stackform/stackform-cli.mk
+include make/tools/stackform/stackform-tools-container.mk
 
 ###
