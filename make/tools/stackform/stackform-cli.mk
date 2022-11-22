@@ -36,7 +36,7 @@ SF_VAR_FILES	:= -var-file=$(SF_STACKS_DIR)/environments/all/$(STACK_NAME).tfvars
 
 ifdef STACK_VARIANT
 	SF_WORKSPACE := $(STACK_VARIANT)
-	SF_VARIANT_ID := $(SF_WORKSPACE)
+	SF_VARIANT_ID := $(STACK_VARIANT)
 	SF_VARS := -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)" -var="variant=$(SF_VARIANT_ID)"
 else
 	SF_WORKSPACE := default
@@ -55,12 +55,13 @@ ifeq ($(DOCKER_HOST), true)
  		--mount type=bind,source=$(PROJECT_DIR),destination=$(SF_SRC_BIND_DIR) \
  		-w $(SF_SRC_BIND_DIR) \
 		-e TF_WORKSPACE=$(SF_WORKSPACE) \
- 		$(SF_CMD_DOCKER_IMAGE) terraform
+ 		$(SF_CMD_DOCKER_IMAGE)
 
-	SF_TF_RUN_CMD := $(SF_DOCKER_RUN_CMD) $(SF_TF_DOCKER_OPTS)
+	SF_TF_RUN_CMD := $(SF_DOCKER_RUN_CMD) $(SF_TF_DOCKER_OPTS) terraform
 	SF_TF_SHELL_CMD := $(SF_DOCKER_SHELL_CMD) $(SF_TF_DOCKER_OPTS)
 else
 	SF_TF_RUN_CMD := TF_WORKSPACE=$(SF_WORKSPACE) terraform
+	SF_TF_SHELL_CMD :=
 endif
 
 ###### Targets ######
@@ -81,12 +82,8 @@ stack-apply: stack-plan
 	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) apply -auto-approve $(SF_VARS) $(SF_VAR_FILES)
 
 .PHONY: stack-console
-stack-console: stack-plan
+stack-console:
 	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) console $(SF_VARS) $(SF_VAR_FILES)
-
-.PHONY: stack-destroy
-stack-destroy: stack-plan
-	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) destroy $(SF_VARS) $(SF_VAR_FILES)
 
 .PHONY: stack-fmt
 stack-fmt:
@@ -100,9 +97,9 @@ stack-init:
 stack-plan: stack-validate
 	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) plan $(SF_VARS) $(SF_VAR_FILES)
 
-.PHONY stack-shell:
+.PHONY: stack-shell
 stack-shell:
-	@$(SF_DOCKER_SHELL_CMD)
+	@$(SF_TF_SHELL_CMD)
 
 .PHONY: stack-validate
 stack-validate:
