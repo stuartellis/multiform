@@ -12,7 +12,7 @@ The Terraform root modules are referred to as *stacks*. The tooling that runs Te
 
 ## How to Reuse
 
-The Makefile implementation consists of these three files:
+The tooling consists of these three files:
 
 - make/tools/stackform/stackform-cli.mk
 - make/tools/stackform/stackform-tools-container.mk
@@ -48,10 +48,12 @@ If you fork this repository, update the URL in the file *make/tools/stackform/st
 ## Dependencies
 
 - Terraform 1.x
-- Makefile implementation: A UNIX shell, *GNU Make* 3, *jq*
+- A UNIX shell
+- *GNU Make* 3 or above 
+- *jq*
 - OPTIONAL: Docker
 
-The Python implementation requires Python 3.8 or above. It has no dependencies apart from the Python standard library.
+The Python implementation requires Python 3.8 or above. It only uses the Python standard library, and requires no other Python packages.
 
 ## Setup
 
