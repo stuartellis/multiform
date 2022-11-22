@@ -1,4 +1,4 @@
-# Conventions for a Terraform Stack - Version 0.4.0
+# Conventions for Terraform Stacks - Version 0.4.0
 
 This design enables a project to include multiple Terraform root modules. These root modules are referred to as *stacks*.
 
@@ -21,9 +21,11 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 - Each stack is a sub-directory under the *terraform1/stacks/definitions/* directory.
 - Each environment is a sub-directory under the *terraform1/stacks/environments/* directory.
 - The *terraform1/stacks/environments/* directory also contains a subdirectory called *all/*.
-- Code for stacks only references or relies upon Terraform modules and files that are under the *terraform1/stacks/* directory and subdirectories. They do not rely on any other files or directories.
+- Code for stacks only references or relies upon Terraform modules and the files that are under the *terraform1/stacks/* directory and subdirectories. They do not rely on any other files or directories.
 
 ### Required Terraform Variables
+
+The following three Terraform variables are required for every stack. Each stack may have any other variables that you wish.
 
 #### stack_name
 

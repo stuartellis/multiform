@@ -1,8 +1,20 @@
 # Concepts 
 
 1. This design enables a project to use multiple Terraform root modules. These root modules are referred to as *stacks*.
-2. The core of the design is a set of conventions for Terraform projects. These consist of an *expected directory structure* and a set of *code conventions for Terraform stacks*.
-3. The settings for a deployment are inferred from the directory structure and Terraform files as much as possible. This reduces the need to maintain additional configuration.
-4. A helper program generates Terraform commands. This *command builder* relies on the conventions to produce a complete Terraform command with the correct options. The command builder returns the Terraform command to the caller as a string. The caller is then responsible for executing the command. The helper program does not execute commands, and does not manage the environment where code is executed.
-5. Each Terraform command that the builder produces executes on a specific Terraform stack, which is defined by the *expected directory structure*.
-6. This example implementation of a project uses a standard set of tools that are provided on current versions of macOS. Linux distributions provide newer versions of the same tools. This means that the project will run on any macOS, WSL or Linux system.
+2. The core of the design is a set of conventions for Terraform projects. These consist of a *specification* that defines the expected directory structure and code conventions for Terraform stacks.
+3. A *runner* uses the conventions to construct and executes Terraform commands.
+
+## The Stacks Specification
+
+The specification:
+
+- Enables multiple tools to work with the same sets of files.
+- Only requires the absolute minimum that is needed.
+- Uses JSON for configuration, so that it does not restrict the tools that can be used.
+- Is specifically designed to enable stacks to be added to an existing project.
+- Explicitly does not specify dependencies between stacks. The order of execution for stacks is determined by the user or automation that calls the runner. This enables you to orchestrate processes as needed. For example, you can write a CI pipeline that deploys a stack and then performs other tasks before deploying another stack.
+
+## Runners
+
+- A runner may be implemented with any programming language or tools.
+- The runners that are provided each have a minimal set of dependencies. This ensures that they can be used on any UNIX-based system, including macOS, Linux and WSL. It also reduces maintenance.

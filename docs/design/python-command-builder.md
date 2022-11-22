@@ -1,20 +1,12 @@
-# Terraform Command Builder - Version 0.4.0
+# Python Command Builder
 
-- The command builder provides the *stack_name*, *environment* and *instance_prefix* as Terraform variables.
+The command builder is a Python script that uses the Terraform stacks specification to generate Terraform commands.
 
-## Makefile Implementation of Terraform Command Builder
-
-The current Makefile implementation of the Terraform command builder is here:
-
-    make/tools/stackform/stackform-cli.mk
-
-## Python Implementation of Terraform Command Builder
-
-The current Python implementation of the Terraform command builder is here:
+The current command builder is here:
 
     python/utils/stackform/stackform.py
 
-- The Python command builder is currently implemented as a Python 3 script, but this may change.
+- The Python command builder is currently implemented as a Python 3 script.
 - The implementation is currently a single file to avoid dependency and deployment issues
 - The license is embedded in the file
 - The implementation only uses the Python standard library. It requires no additional packages.

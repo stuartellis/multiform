@@ -4,7 +4,9 @@ Example of a monorepo project with multiple infrastructure components.
 
 Each infrastructure component is a separate Terraform root module. The project uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces) to support deploying multiple instances of the same component to the same environment.
 
-The main implementation uses UNIX shell and a Makefile. This project also includes an alternative implementation in Python 3.
+The tooling uses UNIX shell and Makefiles. This project also includes an alternative implementation in Python 3.
+
+The Terraform root modules are referred to as *stacks*. The tooling that runs Terraform on stacks is referred to as *stackform*.
 
 > /!\ EXPERIMENTAL: This project is under development.
 
@@ -16,7 +18,7 @@ The Makefile implementation consists of these three files:
 - make/tools/stackform/stackform-tools-container.mk
 - docker/stackform-tools.dockerfile
 
-The following *variables* and *includes* must be present in the main Makefile:
+The following *variables* and *includes* must be present in the top-level Makefile for your project:
 
 ```make
 ### Stackform
@@ -84,11 +86,13 @@ Specify *STACK_VARIANT* to create an alternate deployment of the same stack in t
 
     make stack-plan STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=dev
 
-> The variants feature uses Terraform workspaces.
-
 By default, all commands apart from *stack-info* run in a container. To run without a container, set *DOCKER_HOST=false*. For example:
 
     make stack-fmt STACK_NAME=example_app DOCKER_HOST=false
+
+## Terraform State
+
+Each stack always has a separate Terraform state file for  each environment. The variants feature uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces). This means that Terraform creates an extra state file for each variant.
 
 ---
 
