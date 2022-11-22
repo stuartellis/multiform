@@ -4,7 +4,7 @@ Example of a monorepo project with multiple infrastructure components.
 
 Each infrastructure component is a separate Terraform root module. The project uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces) to support deploying multiple instances of the same component to the same environment.
 
-The main implementation uses shell and a Makefile. This project also includes an alternative implementation in Python 3.
+The main implementation uses UNIX shell and a Makefile. This project also includes an alternative implementation in Python 3.
 
 > /!\ EXPERIMENTAL: This project is under development.
 
@@ -16,7 +16,7 @@ The Makefile implementation consists of these three files:
 - make/tools/stackform/stackform-tools-container.mk
 - docker/stackform-tools.dockerfile
 
-The following variables and includes must be present in the main Makefile:
+The following *variables* and *includes* must be present in the main Makefile:
 
 ```make
 ### Stackform
@@ -33,7 +33,9 @@ include make/tools/stackform/stackform-tools-container.mk
 ###
 ```
 
-It references this external URL:
+> This does not interfere with any other use of Make. All of the targets and variables in the *mk* files are namespaced.
+
+The implementation references this external URL:
 
 https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/0.4.0/README.md
 
