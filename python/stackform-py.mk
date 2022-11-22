@@ -2,7 +2,7 @@
 #
 # Example Make targets and variables for Python implementation
 
-STACK_PY_CMD_BUILDER	= ./python/utils/stackform/stackform.py
+STACK_PY_CMD_BUILDER	= ./utils/stackform/stackform.py
 
 ifdef STACK_VARIANT
 	STACK_PY_OPTIONS := -i $(STACK_VARIANT)
