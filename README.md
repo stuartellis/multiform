@@ -67,13 +67,13 @@ To use a development container with Visual Studio Code:
 
 ## Usage
 
-Use Make to run the appropriate tasks.
+Use Make to run the appropriate commands.
 
-The *stacktools-build* target creates a Docker container image for the tools to use:
+Before you run other commands, use the *stacktools-build* target to create a Docker container image for the tools to use:
 
     make stacktools-build
 
-By default, the container is built for the same CPU architecture as the machine that the command is run on. To build for another CPU architecture, override STACKTOOLS_TARGET_CPU_ARCH. For example, use arm64 for ARM:
+By default, the tools container is built for the same CPU architecture as the machine that the command is run on. To build for another CPU architecture, override STACKTOOLS_TARGET_CPU_ARCH. For example, specify *arm64* for ARM:
 
     make stacktools-build STACKTOOLS_TARGET_CPU_ARCH=arm64
 
@@ -86,7 +86,7 @@ Specify *STACK_VARIANT* to create an alternate deployment of the same stack in t
 
     make stack-plan STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=dev
 
-By default, all commands apart from *stack-info* run in a container. To run without a container, set *DOCKER_HOST=false*. For example:
+By default, all of the commands apart from *stack-info* run in a container. To run without a container, set *DOCKER_HOST=false*. For example:
 
     make stack-fmt STACK_NAME=example_app DOCKER_HOST=false
 
