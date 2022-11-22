@@ -36,8 +36,7 @@ stacktools-build:
 	@$(STACKTOOLS_DOCKER_BUILD_CMD) $(STACKTOOLS_SOURCE_HOST_DIR) --platform $(STACKTOOLS_TARGET_PLATFORM) -f $(STACKTOOLS_DOCKER_FILE) -t $(STACKTOOLS_IMAGE_TAG) \
 	--build-arg DOCKER_IMAGE_BASE=$(STACKTOOLS_DOCKER_IMAGE_BASE) \
 	--build-arg TERRAFORM_VERSION=$(STACKTOOLS_TERRAFORM_VERSION) \
-	--label org.opencontainers.image.version=$(STACKTOOLS_VERSION) \
-	--label org.opencontainers.image.authors=$(PROJECT_MAINTAINERS)
+	--label org.opencontainers.image.version=$(STACKTOOLS_VERSION)
 
 .PHONY stacktools-info:
 stacktools-info:
