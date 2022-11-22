@@ -23,7 +23,7 @@ The following *variables* and *includes* must be present in the main Makefile:
 
 PROJECT_DIR		:= $(shell pwd)
 STACK_NAME		?= example_app
-STACK_VARIANT  ?=
+STACK_VARIANT   ?=
 ENVIRONMENT		?= dev
 DOCKER_HOST     ?= true
 
@@ -92,9 +92,9 @@ By default, all commands apart from *stack-info* run in a container. To run with
 
 ## TODOs
 
-- Improve jq to read backend file only once.
+- Improve jq to read backend file only when stack- targets are invoked, once.
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
 - Provide guidance on executing commands on multiple stacks.
 - Improve guidance on cross-stack references.
-- Add self-update for stackform assets
+- Add self-update target for stackform files, to enable refreshes
