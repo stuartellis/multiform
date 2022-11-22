@@ -4,11 +4,13 @@ Example of a monorepo project with multiple infrastructure components.
 
 Each infrastructure component is a separate Terraform root module. The project uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces) to support deploying multiple instances of the same component to the same environment.
 
+The main implementation uses shell and a Makefile. This project also includes an alternative implementation in Python 3.
+
 > /!\ EXPERIMENTAL: This project is under development.
 
 ## How to Reuse
 
-The implementation consists of these three files:
+The Makefile implementation consists of these three files:
 
 - make/tools/stackform/stackform-cli.mk
 - make/tools/stackform/stackform-tools-container.mk
@@ -41,7 +43,7 @@ https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/0.4.0/REA
 - Makefile implementation: A UNIX shell, *GNU Make* 3, *jq*
 - OPTIONAL: Docker
 
-The Python implementation requires Python 3.8 or above
+The Python implementation requires Python 3.8 or above. It has no dependencies apart from the Python standard library.
 
 ## Setup
 
