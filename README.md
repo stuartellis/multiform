@@ -6,7 +6,7 @@ Each infrastructure component is a separate Terraform root module. The project u
 
 > /!\ EXPERIMENTAL: This project is under development.
 
-## Reuse
+## How to Reuse
 
 The implementation consists of these three files:
 
@@ -19,11 +19,11 @@ The following variables and includes must be present in the main Makefile:
 ```
 ### Stackform
 
-PROJECT_DIR				:= $(shell pwd)
-STACK_NAME				?= example_app
-STACK_INSTANCE			?=
-ENVIRONMENT				?= dev
-DOCKER_HOST				?= true
+PROJECT_DIR		:= $(shell pwd)
+STACK_NAME		?= example_app
+STACK_INSTANCE  ?=
+ENVIRONMENT		?= dev
+DOCKER_HOST     ?= true
 
 include make/tools/stackform/stackform-cli.mk
 include make/tools/stackform/stackform-tools-container.mk
@@ -63,7 +63,7 @@ The *stacktools-build* target creates a Docker container image for the tools to 
 
     make stacktools-build
 
-To build for another CPU architecture, override STACKTOOLS_TARGET_CPU_ARCH. For example, use arm64 for ARM:
+By default, the container is built for the same CPU architecture as the machine that the command is run on. To build for another CPU architecture, override STACKTOOLS_TARGET_CPU_ARCH. For example, use arm64 for ARM:
 
     make stacktools-build STACKTOOLS_TARGET_CPU_ARCH=arm64
 
