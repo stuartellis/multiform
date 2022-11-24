@@ -100,7 +100,7 @@ Each stack always has a separate Terraform state file for  each environment. The
 
 ## TODOs
 
-- Improve jq to read backend file only when stack- targets are invoked, once.
+- Improve Makefile to read backend file only when stack- targets are invoked.
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
 - Provide guidance on executing commands on multiple stacks.

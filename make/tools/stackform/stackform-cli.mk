@@ -26,9 +26,11 @@ SF_STACKS_DIR		:= $(PROJECT_DIR)/terraform1/stacks
 ###### Terraform Variables ######
 
 SF_BACKEND_FILE		:= $(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/backend.json
-SF_REMOTE_REGION 	:= $(shell jq '.aws.region' $(SF_BACKEND_FILE))
-SF_REMOTE_BUCKET 	:= $(shell jq '.aws.bucket' $(SF_BACKEND_FILE))
-SF_REMOTE_DDB_TABLE := $(shell jq '.aws.dynamodb_table' $(SF_BACKEND_FILE))
+
+SF_BACKEND_AWS		:= $(shell cat $(SF_BACKEND_FILE) | jq '.aws')
+SF_REMOTE_REGION 	:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.region')
+SF_REMOTE_BUCKET 	:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.bucket')
+SF_REMOTE_DDB_TABLE := $(shell echo '$(SF_BACKEND_AWS)' | jq '.dynamodb_table')
 SF_REMOTE_BACKEND 	:= -backend-config=region=$(SF_REMOTE_REGION) -backend-config=bucket=$(SF_REMOTE_BUCKET) -backend-config=key=stacks/$(ENVIRONMENT)/$(STACK_NAME) -backend-config=dynamodb_table=$(SF_REMOTE_DDB_TABLE)
 
 SF_WORKING_DIR	:= -chdir=$(SF_STACKS_DIR)/definitions/$(STACK_NAME)
@@ -57,7 +59,8 @@ SF_DOCKER_SHELL_CMD		:= docker run --rm -it --entrypoint /bin/sh
 
 ifeq ($(DOCKER_HOST), true)
 	SF_SRC_BIND_DIR		:= /src
-	SF_TF_DOCKER_OPTS	:= --user $(shell id -u) \
+	SF_UID				:= $(shell id -u)
+	SF_TF_DOCKER_OPTS	:= --user $(SF_UID) \
  		--mount type=bind,source=$(PROJECT_DIR),destination=$(SF_SRC_BIND_DIR) \
  		-w $(SF_SRC_BIND_DIR) \
 		$(DOCKER_ENV_VARS) \
@@ -72,17 +75,6 @@ endif
 
 ###### Targets ######
 
-.PHONY: stack-info
-stack-info:
-	@echo "Stacks Tools Version: $(SF_STACKS_TOOLS_VERSION)"
-	@echo "Stacks Specification Version: $(SF_STACKS_SPEC_VERSION)"
-	@echo "Stacks Specification URL: $(SF_STACKS_SPEC_URL)"
-	@echo "Stacks Directory: $(SF_STACKS_DIR)"
-	@echo "Environment: $(ENVIRONMENT)"
-	@echo "Stack: $(STACK_NAME)"
-	@echo "Stack Variant Identifier: $(SF_VARIANT_ID)"
-	@echo "Terraform Workspace: $(SF_WORKSPACE)"
-
 .PHONY: stack-apply
 stack-apply: stack-plan
 	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) apply -auto-approve $(SF_VARS) $(SF_VAR_FILES)
@@ -94,6 +86,20 @@ stack-console:
 .PHONY: stack-fmt
 stack-fmt:
 	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) fmt
+
+.PHONY: stack-info
+stack-info:
+	@echo "Stacks Tools Version: $(SF_STACKS_TOOLS_VERSION)"
+	@echo "Stacks Specification Version: $(SF_STACKS_SPEC_VERSION)"
+	@echo "Stacks Specification URL: $(SF_STACKS_SPEC_URL)"
+	@echo "Stacks Directory: $(SF_STACKS_DIR)"
+	@echo "Stack Name: $(STACK_NAME)"
+	@echo "Stack Variant Identifier: $(SF_VARIANT_ID)"
+	@echo "Stack Environment: $(ENVIRONMENT)"
+	@echo "Backend AWS Region: $(SF_REMOTE_REGION)"
+	@echo "Backend AWS S3 Bucket: $(SF_REMOTE_BUCKET)"
+	@echo "Backend AWS DynamoDB: $(SF_REMOTE_DDB_TABLE)"
+	@echo "Terraform Workspace: $(SF_WORKSPACE)"
 
 .PHONY: stack-init
 stack-init:
