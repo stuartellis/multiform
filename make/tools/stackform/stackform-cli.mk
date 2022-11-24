@@ -11,7 +11,7 @@
 
 ###### Versions ######
 
-SF_STACKS_TOOLS_VERSION	:= 0.4.0
+SF_STACKS_TOOLS_VERSION	:= 0.4.1
 SF_STACKS_SPEC_VERSION	:= 0.4.0
 SF_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/$(SF_STACKS_SPEC_VERSION)/README.md
 
@@ -61,7 +61,7 @@ ifeq ($(DOCKER_HOST), true)
 	SF_TF_SHELL_CMD := $(SF_DOCKER_SHELL_CMD) $(SF_TF_DOCKER_OPTS)
 else
 	SF_TF_RUN_CMD := TF_WORKSPACE=$(SF_WORKSPACE) terraform
-	SF_TF_SHELL_CMD :=
+	SF_TF_SHELL_CMD := /bin/sh
 endif
 
 ###### Targets ######
