@@ -105,7 +105,7 @@ stack-plan: stack-validate
 
 .PHONY: stack-shell
 stack-shell:
-	$(SF_TF_SHELL_CMD)
+	@$(SF_TF_SHELL_CMD)
 
 .PHONY: stack-validate
 stack-validate:
