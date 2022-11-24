@@ -34,6 +34,12 @@ SF_REMOTE_BACKEND 	:= -backend-config=region=$(SF_REMOTE_REGION) -backend-config
 SF_WORKING_DIR	:= -chdir=$(SF_STACKS_DIR)/definitions/$(STACK_NAME)
 SF_VAR_FILES	:= -var-file=$(SF_STACKS_DIR)/environments/all/$(STACK_NAME).tfvars -var-file=$(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/$(STACK_NAME).tfvars
 
+ifdef AWS_ACCESS_KEY_ID
+	DOCKER_ENV_VARS := -e TF_WORKSPACE=$(SF_WORKSPACE) -e AWS_REGION=$(AWS_REGION) -e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) -e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
+else
+	DOCKER_ENV_VARS := -e TF_WORKSPACE=$(SF_WORKSPACE)
+endif
+
 ifdef STACK_VARIANT
 	SF_WORKSPACE := $(STACK_VARIANT)
 	SF_VARIANT_ID := $(STACK_VARIANT)
@@ -54,7 +60,7 @@ ifeq ($(DOCKER_HOST), true)
 	SF_TF_DOCKER_OPTS	:= --user $(shell id -u) \
  		--mount type=bind,source=$(PROJECT_DIR),destination=$(SF_SRC_BIND_DIR) \
  		-w $(SF_SRC_BIND_DIR) \
-		-e TF_WORKSPACE=$(SF_WORKSPACE) \
+		$(DOCKER_ENV_VARS) \
  		$(SF_CMD_DOCKER_IMAGE)
 
 	SF_TF_RUN_CMD := $(SF_DOCKER_RUN_CMD) $(SF_TF_DOCKER_OPTS) terraform
@@ -99,7 +105,7 @@ stack-plan: stack-validate
 
 .PHONY: stack-shell
 stack-shell:
-	@$(SF_TF_SHELL_CMD)
+	$(SF_TF_SHELL_CMD)
 
 .PHONY: stack-validate
 stack-validate:
