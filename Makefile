@@ -13,12 +13,12 @@ MAKEFLAGS += --no-builtin-rules
 
 .DEFAULT_GOAL := stack-info
 
-### Stackform
+### Required for Stackform
 
 PROJECT_DIR				:= $(shell pwd)
-STACK_NAME				?= example_app
 ENVIRONMENT				?= dev
 
 include make/tools/stackform/*.mk
 
 ###
+
