@@ -11,7 +11,7 @@
 
 ###### Versions ######
 
-SF_STACKS_TOOLS_VERSION	:= 0.4.2
+SF_STACKS_TOOLS_VERSION	:= 0.4.3
 SF_STACKS_SPEC_VERSION	:= 0.4.0
 SF_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/$(SF_STACKS_SPEC_VERSION)/README.md
 
@@ -30,13 +30,17 @@ SF_STACKS_DIR		:= $(PROJECT_DIR)/terraform1/stacks
 
 ###### Terraform Variables ######
 
-ifeq ($(SF_ENABLE_BACKEND), true)
-	SF_BACKEND_FILE				:= $(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/backend.json
-	SF_BACKEND_AWS				:= $(shell cat $(SF_BACKEND_FILE) | jq '.aws')
-	SF_AWS_BACKEND_REGION		:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.region')
-	SF_AWS_BACKEND_BUCKET		:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.bucket')
-	SF_AWS_BACKEND_DDB_TABLE	:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.dynamodb_table')
-	SF_TF_BACKEND				:= -backend-config=region=$(SF_AWS_BACKEND_REGION) -backend-config=bucket=$(SF_AWS_BACKEND_BUCKET) -backend-config=key=stacks/$(ENVIRONMENT)/$(STACK_NAME) -backend-config=dynamodb_table=$(SF_AWS_BACKEND_DDB_TABLE)
+ifeq ($(MAKECMDGOALS), stack-init)
+	ifeq ($(SF_ENABLE_BACKEND), true)
+		SF_BACKEND_FILE				:= $(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/backend.json
+		SF_BACKEND_AWS				:= $(shell cat $(SF_BACKEND_FILE) | jq '.aws')
+		SF_AWS_BACKEND_REGION		:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.region')
+		SF_AWS_BACKEND_BUCKET		:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.bucket')
+		SF_AWS_BACKEND_DDB_TABLE	:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.dynamodb_table')
+		SF_TF_BACKEND				:= -backend-config=region=$(SF_AWS_BACKEND_REGION) -backend-config=bucket=$(SF_AWS_BACKEND_BUCKET) -backend-config=key=stacks/$(ENVIRONMENT)/$(STACK_NAME) -backend-config=dynamodb_table=$(SF_AWS_BACKEND_DDB_TABLE)
+	else
+		SF_TF_BACKEND				:=
+	endif
 endif
 
 SF_WORKING_DIR	:= -chdir=$(SF_STACKS_DIR)/definitions/$(STACK_NAME)
@@ -106,11 +110,7 @@ stack-info:
 
 .PHONY: stack-init
 stack-init:
-ifeq ($(SF_ENABLE_BACKEND), 1)
 	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init $(SF_TF_BACKEND)
-else
-	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init
-endif
 
 .PHONY: stack-plan
 stack-plan: stack-validate
