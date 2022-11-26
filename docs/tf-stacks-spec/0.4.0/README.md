@@ -18,10 +18,11 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 
 - Each project has a root directory for Terraform code and configuration, called *terraform1/*
 - The root directory for the set of Terraform stacks is called *terraform1/stacks/*
+- The root directory *terraform1/* should only contain the *stacks/* directory and a *.gitignore* file.
 - Each stack is a sub-directory under the *terraform1/stacks/definitions/* directory.
 - Each environment is a sub-directory under the *terraform1/stacks/environments/* directory.
 - The *terraform1/stacks/environments/* directory also contains a subdirectory called *all/*.
-- Code for stacks only references or relies upon Terraform modules and the files that are under the *terraform1/stacks/* directory and subdirectories. They do not rely on any other files or directories.
+- The Terraform code for a stack should only use Terraform modules and the files that are under the *terraform1/stacks/* directory and subdirectories. It should not rely on any other files or directories.
 
 ### Required Terraform Variables
 
@@ -80,14 +81,25 @@ The *variant* is an identifier for a specific instance of a stack. It is an empt
 #### Terraform *backend*
 
 - Each stack should use the *s3* remote state backend.
-- The backend should declare a *workspace_key_prefix* with the value *workspaces*. Provide all other settings when Terraform runs.
+- The Terraform backend should declare a *workspace_key_prefix* with the value *workspaces*. Provide all other settings when Terraform runs.
 
 Here is an example:
 
 ```terraform
-backend "s3" {
+terraform {
+  required_version = "> 1.0.0"
+
+  backend "s3" {
     workspace_key_prefix = "workspaces"
   }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "= 4.41.0"
+    }
+  }
+}
 ```
 
 ---
@@ -117,6 +129,20 @@ backend "s3" {
 - A stack should not hard-code the IAM execution role that it uses with AWS.
 - Each stack should be deployable on any AWS cloud account that can provide the resources that the stack depends on.
 - Each stack should publish an ARN for each key resource that it manages to Parameter Store, in the same account and region.
+- Use the *default_tags* option of the AWS provider to set tags for all resources. For example:
+
+```terraform
+provider "aws" {
+  default_tags {
+    tags = {
+      Environment = var.environment
+      Provisioner = "Terraform"
+      Stack       = var.stack_name
+      Variant     = var.variant
+    }
+  }
+}
+```
 
 ### Code Deployment
 
