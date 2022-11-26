@@ -16,9 +16,9 @@ The tooling consists of these three files:
 
 - make/tools/stackform/stackform-cli.mk
 - make/tools/stackform/stackform-tools-container.mk
-- docker/stackform-tools.dockerfile
+- docker/tools/stackform/stackform-tools.dockerfile
 
-The following *variables* and an *include* must be present in the top-level Makefile for your project:
+The following *include* and *variables* and must be present in the top-level Makefile for your project:
 
 ```make
 PROJECT_DIR		:= $(shell pwd)
