@@ -21,8 +21,8 @@ SF_CMD_DOCKER_IMAGE		:= stackform-tools:developer
 
 ###### Options ######
 
-SF_ENABLE_BACKEND		?= true
-SF_RUN_CONTAINER		?= true 
+SF_ENABLE_BACKEND	:= true
+SF_RUN_CONTAINER	:= true
 
 ###### Root Directory ######
 
@@ -30,7 +30,7 @@ SF_STACKS_DIR		:= $(PROJECT_DIR)/terraform1/stacks
 
 ###### Terraform Variables ######
 
-ifeq ($(SF_ENABLE_BACKEND),true)
+ifeq ($(SF_ENABLE_BACKEND), true)
 	SF_BACKEND_FILE				:= $(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/backend.json
 	SF_BACKEND_AWS				:= $(shell cat $(SF_BACKEND_FILE) | jq '.aws')
 	SF_AWS_BACKEND_REGION		:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.region')
@@ -60,10 +60,10 @@ endif
 
 ###### Terraform Command ######
 
-SF_DOCKER_RUN_CMD 		:= docker run --rm
-SF_DOCKER_SHELL_CMD		:= docker run --rm -it --entrypoint /bin/sh
+ifeq ($(SF_RUN_CONTAINER), true)
+	SF_DOCKER_RUN_CMD 		:= docker run --rm
+	SF_DOCKER_SHELL_CMD		:= docker run --rm -it --entrypoint /bin/sh
 
-ifeq ($(SF_RUN_CONTAINER),true)
 	SF_SRC_BIND_DIR		:= /src
 	SF_UID				:= $(shell id -u)
 	SF_TF_DOCKER_OPTS	:= --user $(SF_UID) \
@@ -106,7 +106,7 @@ stack-info:
 
 .PHONY: stack-init
 stack-init:
-ifeq ($(SF_ENABLE_BACKEND),true)
+ifeq ($(SF_ENABLE_BACKEND), 1)
 	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init $(SF_TF_BACKEND)
 else
 	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init
