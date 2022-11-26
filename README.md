@@ -76,6 +76,10 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
     make stack-info
     make stack-fmt STACK_NAME=example_app
 
+Specify *ENVIRONMENT* to create a deployment of the stack in the target environment:
+
+    make stack-apply STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=dev
+
 Specify *STACK_VARIANT* to create an alternate deployment of the same stack in the same environment:
 
     make stack-plan STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=dev
@@ -90,12 +94,13 @@ To specify the container that the tools use, set the *SF_TOOLS_DOCKER_IMAGE* var
 
 ## Terraform State
 
-Each stack always has a separate Terraform state file for  each environment. The variants feature uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces). This means that Terraform creates an extra state file for each variant.
+Each stack always has a separate Terraform state file for each environment. The variants feature uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces). This means that Terraform creates an extra state file for each variant.
 
 ---
 
 ## TODOs
 
+- Add guards in Make for undefined PROJECT_DIR, STACK_NAME or ENVIRONMENT variables.
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
 - Provide guidance on executing commands on multiple stacks.
