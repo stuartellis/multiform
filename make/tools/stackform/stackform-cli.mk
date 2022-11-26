@@ -107,9 +107,9 @@ stack-info:
 .PHONY: stack-init
 stack-init:
 ifeq ($(SF_ENABLE_BACKEND),true)
-	$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init $(SF_TF_BACKEND)
+	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init $(SF_TF_BACKEND)
 else
-	$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init
+	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init
 endif
 
 .PHONY: stack-plan
