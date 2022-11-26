@@ -20,7 +20,7 @@ STACKTOOLS_VERSION					?= developer
 
 STACKTOOLS_APP_NAME					:= stackform-tools
 STACKTOOLS_SOURCE_HOST_DIR			:= $(shell pwd)
-STACKTOOLS_DOCKER_FILE				:= $(shell pwd)/docker/stackform-tools.dockerfile
+STACKTOOLS_DOCKER_FILE				:= $(shell pwd)/docker/tools/stackform/stackform-tools.dockerfile
 STACKTOOLS_IMAGE_TAG				:= $(STACKTOOLS_APP_NAME):$(STACKTOOLS_VERSION)
 
 ###### Docker ######

@@ -18,21 +18,13 @@ The tooling consists of these three files:
 - make/tools/stackform/stackform-tools-container.mk
 - docker/stackform-tools.dockerfile
 
-The following *variables* and *includes* must be present in the top-level Makefile for your project:
+The following *variables* and an *include* must be present in the top-level Makefile for your project:
 
 ```make
-### Stackform
-
 PROJECT_DIR		:= $(shell pwd)
-STACK_NAME		?= example_app
-STACK_VARIANT   ?=
 ENVIRONMENT		?= dev
-DOCKER_HOST     ?= true
 
-include make/tools/stackform/stackform-cli.mk
-include make/tools/stackform/stackform-tools-container.mk
-
-###
+include make/tools/stackform/*.mk
 ```
 
 > This does not interfere with any other use of Make. All of the targets and variables in the *mk* files are namespaced.
@@ -88,9 +80,13 @@ Specify *STACK_VARIANT* to create an alternate deployment of the same stack in t
 
     make stack-plan STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=dev
 
-By default, all of the commands apart from *stack-info* run in a container. To run without a container, set *DOCKER_HOST=false*. For example:
+By default, all of the commands apart from *stack-info* run in a container. To run without a container, set *SF_RUN_CONTAINER=false*. For example:
 
-    make stack-fmt STACK_NAME=example_app DOCKER_HOST=false
+    make stack-fmt STACK_NAME=example_app SF_RUN_CONTAINER=false
+
+To specify the container that the tools use, set the *SF_TOOLS_DOCKER_IMAGE* variable to the name of the container:
+
+    make stack-fmt STACK_NAME=example_app SF_TOOLS_DOCKER_IMAGE=stackform-tools:0.4.2
 
 ## Terraform State
 
@@ -100,7 +96,6 @@ Each stack always has a separate Terraform state file for  each environment. The
 
 ## TODOs
 
-- Improve Makefile to read backend file only when stack- targets are invoked.
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
 - Provide guidance on executing commands on multiple stacks.

@@ -4,14 +4,14 @@
 #
 # Requirements: A UNIX shell, jq, GNU Make 3 or above
 #
-# Set DOCKER_HOST=true to run in a Docker container
+# Set SF_RUN_CONTAINER=true to run in a Docker container
 #
 # This provides the Terraform variables: stack_name, environment, variant
 #
 
 ###### Versions ######
 
-SF_STACKS_TOOLS_VERSION	:= 0.4.1
+SF_STACKS_TOOLS_VERSION	:= 0.4.2
 SF_STACKS_SPEC_VERSION	:= 0.4.0
 SF_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/$(SF_STACKS_SPEC_VERSION)/README.md
 
@@ -19,19 +19,25 @@ SF_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/t
 
 SF_CMD_DOCKER_IMAGE		:= stackform-tools:developer
 
+###### Options ######
+
+SF_ENABLE_BACKEND		?= true
+SF_RUN_CONTAINER		?= true 
+
 ###### Root Directory ######
 
 SF_STACKS_DIR		:= $(PROJECT_DIR)/terraform1/stacks
 
 ###### Terraform Variables ######
 
-SF_BACKEND_FILE		:= $(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/backend.json
-
-SF_BACKEND_AWS		:= $(shell cat $(SF_BACKEND_FILE) | jq '.aws')
-SF_REMOTE_REGION 	:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.region')
-SF_REMOTE_BUCKET 	:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.bucket')
-SF_REMOTE_DDB_TABLE := $(shell echo '$(SF_BACKEND_AWS)' | jq '.dynamodb_table')
-SF_REMOTE_BACKEND 	:= -backend-config=region=$(SF_REMOTE_REGION) -backend-config=bucket=$(SF_REMOTE_BUCKET) -backend-config=key=stacks/$(ENVIRONMENT)/$(STACK_NAME) -backend-config=dynamodb_table=$(SF_REMOTE_DDB_TABLE)
+ifeq ($(SF_ENABLE_BACKEND),true)
+	SF_BACKEND_FILE				:= $(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/backend.json
+	SF_BACKEND_AWS				:= $(shell cat $(SF_BACKEND_FILE) | jq '.aws')
+	SF_AWS_BACKEND_REGION		:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.region')
+	SF_AWS_BACKEND_BUCKET		:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.bucket')
+	SF_AWS_BACKEND_DDB_TABLE	:= $(shell echo '$(SF_BACKEND_AWS)' | jq '.dynamodb_table')
+	SF_TF_BACKEND				:= -backend-config=region=$(SF_AWS_BACKEND_REGION) -backend-config=bucket=$(SF_AWS_BACKEND_BUCKET) -backend-config=key=stacks/$(ENVIRONMENT)/$(STACK_NAME) -backend-config=dynamodb_table=$(SF_AWS_BACKEND_DDB_TABLE)
+endif
 
 SF_WORKING_DIR	:= -chdir=$(SF_STACKS_DIR)/definitions/$(STACK_NAME)
 SF_VAR_FILES	:= -var-file=$(SF_STACKS_DIR)/environments/all/$(STACK_NAME).tfvars -var-file=$(SF_STACKS_DIR)/environments/$(ENVIRONMENT)/$(STACK_NAME).tfvars
@@ -57,7 +63,7 @@ endif
 SF_DOCKER_RUN_CMD 		:= docker run --rm
 SF_DOCKER_SHELL_CMD		:= docker run --rm -it --entrypoint /bin/sh
 
-ifeq ($(DOCKER_HOST), true)
+ifeq ($(SF_RUN_CONTAINER),true)
 	SF_SRC_BIND_DIR		:= /src
 	SF_UID				:= $(shell id -u)
 	SF_TF_DOCKER_OPTS	:= --user $(SF_UID) \
@@ -70,7 +76,7 @@ ifeq ($(DOCKER_HOST), true)
 	SF_TF_SHELL_CMD := $(SF_DOCKER_SHELL_CMD) $(SF_TF_DOCKER_OPTS)
 else
 	SF_TF_RUN_CMD := TF_WORKSPACE=$(SF_WORKSPACE) terraform
-	SF_TF_SHELL_CMD := /bin/sh
+	SF_TF_SHELL_CMD := TF_WORKSPACE=$(SF_WORKSPACE) /bin/sh
 endif
 
 ###### Targets ######
@@ -96,14 +102,15 @@ stack-info:
 	@echo "Stack Name: $(STACK_NAME)"
 	@echo "Stack Variant Identifier: $(SF_VARIANT_ID)"
 	@echo "Stack Environment: $(ENVIRONMENT)"
-	@echo "Backend AWS Region: $(SF_REMOTE_REGION)"
-	@echo "Backend AWS S3 Bucket: $(SF_REMOTE_BUCKET)"
-	@echo "Backend AWS DynamoDB: $(SF_REMOTE_DDB_TABLE)"
 	@echo "Terraform Workspace: $(SF_WORKSPACE)"
 
 .PHONY: stack-init
 stack-init:
-	@$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init $(SF_REMOTE_BACKEND)
+ifeq ($(SF_ENABLE_BACKEND),true)
+	$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init $(SF_TF_BACKEND)
+else
+	$(SF_TF_RUN_CMD) $(SF_WORKING_DIR) init
+endif
 
 .PHONY: stack-plan
 stack-plan: stack-validate
