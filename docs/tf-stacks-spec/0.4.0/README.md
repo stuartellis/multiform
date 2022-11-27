@@ -28,6 +28,21 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 
 The following three Terraform variables are required for every stack. Each stack may have any other variables that you wish.
 
+```terraform
+variable "environment" {
+  type = string
+}
+
+variable "stack_name" {
+  type = string
+}
+
+variable "variant" {
+  type    = string
+  default = ""
+}
+```
+
 #### stack_name
 
 The unique name of the stack. The *stack_name* should start with the name of the project.
