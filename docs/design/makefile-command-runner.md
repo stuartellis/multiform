@@ -6,7 +6,7 @@
 - Every target has a prefix, to avoid conflicts with targets that are provided by other Makefiles.
 - Every variable has a prefix, to avoid conflicts with other Makefiles.
 - The Makefile for running Terraform commands uses the prefix *stack-* for targets and the prefix *ST_* for variables.
-- The Makefile for building a Docker container for tools uses the prefix *stacktools-* for targets and the prefix *STACKTOOLS_* for variables.
+- The Makefile for building a Docker container for tools uses the prefix *stackrunner-* for targets and the prefix *ST_RUNNER_* for variables.
 
 ## Dependencies
 
