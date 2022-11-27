@@ -44,20 +44,22 @@ Any other directories that contain Terraform code are ignored.
 - [jq](https://stedolan.github.io/jq/)
 - EITHER: Docker OR provide Terraform 1.x separately
 
-The tooling is compatible with the shell and Make versions that are provided by *macOS*.
+The tooling is compatible with the UNIX shell and Make versions that are provided by *macOS*.
 
-The Python implementation requires Python 3.8 or above. It only uses the Python standard library, and requires no other Python packages.
+> /!\ This project is not yet tested on WSL. It should work correctly on any WSL environment that has Make, jq and Docker installed.
+
+The alternative Python implementation requires Python 3.8 or above. It only uses the Python standard library, and requires no other Python packages.
 
 ## Setup
 
 This project includes the configuration for a [Development Container](https://containers.dev/). This means that Visual Studio Code and Visual Studio can automatically set up a working environment for you.
 
-To use a development container with Visual Studio Code:
+To run the project on Visual Studio Code:
 
 1. Ensure that Docker is running
 2. Ensure that the **Dev Containers** extension is installed on Visual Studio Code
 3. Open the project as a folder in Visual Studio Code
-4. Accept the option to reopen the project in a container when prompted.
+4. Accept the option to reopen the project in a development container when prompted.
 5. Run *make stacktools-build* to create the Docker container for Terraform
 
 ## Usage
@@ -95,7 +97,7 @@ To specify a different container image for Terraform, set the *SF_TOOLS_DOCKER_I
 
 Each stack always has a separate Terraform state file for each environment. The variants feature uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces). This means that Terraform creates an extra state file for each variant.
 
-## Using Containers
+## More About Containers
 
 ### Development Containers
 
