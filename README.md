@@ -1,6 +1,8 @@
 # Multiform
 
-Example of a monorepo project with multiple infrastructure components.
+> /!\ EXPERIMENTAL: This project is under development.
+
+A test monorepo project with multiple infrastructure components.
 
 Each infrastructure component is a separate Terraform root module. The project uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces) to support deploying multiple instances of the same component to the same environment.
 
@@ -8,9 +10,7 @@ The Terraform root modules are referred to as *stacks*. The tooling that runs Te
 
 The tooling uses UNIX shell, Makefiles and the [jq](https://stedolan.github.io/jq/) utility. This project also includes an alternative implementation in Python 3. By default, the tooling uses Docker and a container to provide Terraform. You can override this to either provide your own container image, or use a separate copy of Terraform.
 
-> /!\ EXPERIMENTAL: This project is under development.
-
-## How to Add to a Project
+## How to Add Tooling to a Project
 
 The tooling consists of these three files:
 
@@ -44,11 +44,13 @@ Any other directories that contain Terraform code are ignored.
 - [jq](https://stedolan.github.io/jq/)
 - EITHER: Docker OR provide Terraform 1.x separately
 
+The tooling is compatible with the shell and Make versions that are provided by *macOS*.
+
 The Python implementation requires Python 3.8 or above. It only uses the Python standard library, and requires no other Python packages.
 
 ## Setup
 
-This project includes the configuration for a [Development Container](https://containers.dev/). The Development Container provides a Linux development environment with all of the dependencies that the project requires.
+This project includes the configuration for a [Development Container](https://containers.dev/). This means that Visual Studio Code and Visual Studio can automatically set up a working environment for you.
 
 To use a development container with Visual Studio Code:
 
@@ -67,10 +69,6 @@ Before you run other commands, use the *stacktools-build* target to create a Doc
     make stacktools-build
 
 This creates the container image *stacktools:developer*.
-
-By default, *stacktools-build* builds the *stacktools* container image for the same CPU architecture as the machine that the command is run on. To build for another CPU architecture, override STACKTOOLS_TARGET_CPU_ARCH. For example, specify *arm64* for ARM:
-
-    make stacktools-build STACKTOOLS_TARGET_CPU_ARCH=arm64
 
 Make targets for Terraform stacks use the prefix *stack-*. For example:
 
@@ -97,11 +95,23 @@ To specify a different container image for Terraform, set the *SF_TOOLS_DOCKER_I
 
 Each stack always has a separate Terraform state file for each environment. The variants feature uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces). This means that Terraform creates an extra state file for each variant.
 
-## Automation and CI/CD
+## Using Containers
+
+### Development Containers
+
+The *.devcontainer/* directory provides Development Container configuration files that are compatible with the [Development Container specification](https://containers.dev/). They provides a Linux development environment with all of the dependencies that the project requires.
+
+### Automation and CI/CD
 
 The Dockerfile for *stacktools* containers includes Make and [jq](https://stedolan.github.io/jq/), as well as Terraform. This means that you can use it to provide a complete environment to deploy your project with Continuous Integration.
 
 If you run all of the deployment process for your project in a *stacktools* container, consider using *SF_RUN_CONTAINER=false* to prevent the tooling from creating a new temporary container for each command.
+
+### Cross-Architecture Support
+
+By default, *stacktools-build* builds the *stacktools* container image for the same CPU architecture as the machine that the command is run on. To build for another CPU architecture, override STACKTOOLS_TARGET_CPU_ARCH. For example, specify *arm64* for ARM:
+
+    make stacktools-build STACKTOOLS_TARGET_CPU_ARCH=arm64
 
 ---
 
