@@ -105,23 +105,33 @@ Each stack always has a separate Terraform state file for each environment. The 
 
 ## More About Containers
 
+### Runner Containers
+
+The *stacktools-runner* images are built to provide a complete environment for running Terraform and the *stacktools*. This means that they include Make and jq as well as Terraform.
+
+The defaults for the *stacktools-runner* container image use Alpine Linux to produce small images.
+
+The default image tag uses the version *developer*. This enables you to rebuild the container image on your machine at any time. If you publish an image to a shared repository, set the version to a fixed number.
+
+Use the *ST_RUNNER_VERSION* variable to build a container image with a fixed version:
+
+    make stackrunner-build ST_RUNNER_VERSION=5.1.2
+
 ### Automation and CI/CD
 
-The Dockerfile for *stacktools-runner* containers includes Make and [jq](https://stedolan.github.io/jq/), as well as Terraform. This means that you can use a *stacktools-runner* container to provide a complete environment to deploy your project with Continuous Integration.
+You can use a *stacktools-runner* container to provide a complete environment to deploy Terraform with Continuous Integration. In most cases, you will provide your own container.
 
-If you run all of the deployment process for your project in a *stacktools-runner* container, consider using *ST_RUN_CONTAINER=false* to prevent the tooling from creating a new temporary container for each command.
+You can run *stacktools* in any container that includes Make, jq, a UNIX shell and either Docker-in-Docker or Terraform.
+
+If you run all of the deployment process for your project in a container, consider including a copy of Terraform in the container and using *ST_RUN_CONTAINER=false* to prevent the tooling from creating a new temporary container for each command.
+
+    make stack-apply ENVIRONMENT=dev STACK_NAME=example_app ST_RUN_CONTAINER=false
 
 ### Cross-Architecture Support
 
-By default, *stackrunner-build* builds the *stacktools-runner* container image for the same CPU architecture as the machine that the command is run on. To build for another CPU architecture, override *STACKRUNNER_TARGET_CPU_ARCH*. For example, specify *arm64* for ARM:
+By default, *stackrunner-build* builds the *stacktools-runner* container image for the same CPU architecture as the machine that the command is run on. To build for another CPU architecture, override *ST_RUNNER_TARGET_CPU_ARCH*. For example, specify *arm64* for ARM:
 
-    make stackrunner-build STACKRUNNER_TARGET_CPU_ARCH=arm64
-
-### Runner Containers
-
-These images are built to provide an environment for running Terraform and the other requirements for *stacktools*.
-
-The defaults for the *stacktools-runner* container image use Alpine Linux to produce small images.
+    make stackrunner-build ST_RUNNER_TARGET_CPU_ARCH=arm64
 
 ### Development Containers
 
