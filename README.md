@@ -4,7 +4,7 @@
 
 A test monorepo project with multiple infrastructure components and reusable tooling.
 
-Each infrastructure component is a separate Terraform root module. The tooling uses built-in features of Terraform to support both multiple components and deploying multiple instances of the same component to the same environment.
+Each infrastructure component is a separate Terraform root module. The tooling uses built-in features of Terraform to support both multiple components in the same repository and deploying multiple instances of the same component to the same environment.
 
 The Terraform root modules are referred to as *stacks*. The tooling that runs Terraform is named *stacktools* for convenience.
 
@@ -12,7 +12,7 @@ You can add the *stacktools* to any project by copying three files into the proj
 
 By default, the tools use Docker and a container to provide Terraform. You can override this to either provide your own container image, or use a separate copy of Terraform.
 
-> **The Stacks Specification:** The *stacktools* follow a [documented and versioned set of conventions](https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/0.4.0/README.md). This enables you to upgrade or replace the tools at any time, without changing your Terraform code.
+> **The Stacks Specification:** The *stacktools* follow a [documented and versioned set of conventions](https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/0.4.0/README.md). These conventions only require three variables in each root module. They enable you to upgrade, replace or remove the tools at any time, without changing your Terraform code.
 
 ## Setting Up This Example Project
 
@@ -136,7 +136,7 @@ The default image tag uses the version *developer*. This enables you to rebuild 
 
 Use the *ST_RUNNER_VERSION* variable to build a container image with a fixed version:
 
-    make stackrunner-build ST_RUNNER_VERSION=5.1.2
+    make stackrunner-build ST_RUNNER_VERSION=1.4.5
 
 ### Automation and CI/CD
 
