@@ -119,11 +119,9 @@ Use the *ST_RUNNER_VERSION* variable to build a container image with a fixed ver
 
 ### Automation and CI/CD
 
-You can use a *stacktools-runner* container to provide a complete environment to deploy Terraform with Continuous Integration. In most cases, you will provide your own container.
+You can use a *stacktools-runner* container to provide an environment to deploy Terraform with Continuous Integration. In most cases, use your own container image. You can run *stacktools* in any container that includes Make, jq, a UNIX shell and either Docker-in-Docker or Terraform.
 
-You can run *stacktools* in any container that includes Make, jq, a UNIX shell and either Docker-in-Docker or Terraform.
-
-If you run all of the deployment process for your project in a container, consider including a copy of Terraform in the container and using *ST_RUN_CONTAINER=false* to prevent the tooling from creating a new temporary container for each command.
+If you run all of the deployment process for your project in a container, include a copy of Terraform in the container and use *ST_RUN_CONTAINER=false* to prevent the tooling from creating a new temporary container for each command.
 
     make stack-apply ENVIRONMENT=dev STACK_NAME=example_app ST_RUN_CONTAINER=false
 
