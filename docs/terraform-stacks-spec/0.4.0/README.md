@@ -212,10 +212,9 @@ provider "aws" {
 }
 ```
 
+- Use the *default_tags* option of the AWS provider to set tags for all resources.
 - A stack should not hard-code the IAM execution role that it uses with AWS.
-- Each stack should be deployable on any AWS cloud account that can provide the resources that the stack depends on.
-- Each stack should publish an ARN for each key resource that it manages to Parameter Store, in the same account and region.
-- Use the *default_tags* option of the AWS provider to set tags for all resources. For example:
+- Each stack should be deployable on any AWS cloud account that can provide the resources that the stack depends upon.
 
 ### Code Deployment
 
