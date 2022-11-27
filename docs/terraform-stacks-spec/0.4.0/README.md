@@ -30,11 +30,22 @@ This diagram summarizes the required directory structure and files:
         |   |- <stack_one>/
         |   |     |
         |   |     |- <Terraform code>
-        |   |
         |   | 
         |   |- <stack_two>/
         |         |
         |         |- <Terraform code>
+        |
+        |
+        |- modules/
+        |   |
+        |   |- <module>/
+        |   |     |
+        |   |     |- <Terraform code>
+        |   | 
+        |   |- <module>/
+        |         |
+        |         |- <Terraform code>
+        |
         |
         |- environments/
             |
@@ -64,6 +75,7 @@ This diagram summarizes the required directory structure and files:
 - Each stack is a sub-directory under the *terraform1/stacks/definitions/* directory.
 - Each environment is a sub-directory under the *terraform1/stacks/environments/* directory.
 - The *terraform1/stacks/environments/* directory also contains a subdirectory called *all/*.
+- The *terraform1/stacks/modules/* directory contains any Terraform modules that are only used by the stacks in this project.
 - The Terraform code for a stack should only use Terraform modules and the files that are under the *terraform1/stacks/* directory and subdirectories. It should not rely on any other files or directories.
 
 ### Required Terraform Variables

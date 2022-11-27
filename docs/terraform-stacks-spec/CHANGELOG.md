@@ -11,6 +11,7 @@ and this specification adheres to [Semantic Versioning](https://semver.org/spec/
 
 - Add specification for Terraform backend.
 - Add examples and diagrams.
+- Add private Terraform modules.
 - Use Terraform workspaces.
 
 ### Changed
