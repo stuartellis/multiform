@@ -23,6 +23,8 @@ This diagram summarizes the required directory structure and files:
     |
     |- .gitignore
     |
+    |- README.md
+    |
     |- stacks/
         |
         |- definitions/
@@ -71,7 +73,7 @@ This diagram summarizes the required directory structure and files:
 
 - Each project has a root directory for Terraform code and configuration, called *terraform1/*
 - The root directory for the set of Terraform stacks is called *terraform1/stacks/*
-- The root directory *terraform1/* should only contain the *stacks/* directory and a *.gitignore* file.
+- The root directory *terraform1/* should only contain the *stacks/* directory, a *.gitignore* file and a *README.md* file.
 - Each stack is a sub-directory under the *terraform1/stacks/definitions/* directory.
 - Each environment is a sub-directory under the *terraform1/stacks/environments/* directory.
 - The *terraform1/stacks/environments/* directory also contains a subdirectory called *all/*.
