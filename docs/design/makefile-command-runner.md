@@ -5,7 +5,7 @@
 - The Makefiles are designed to be used as *includes*, so that developers can manage the top-level Makefile and any other Makefiles in the project without conflicts.
 - Every target has a prefix, to avoid conflicts with targets that are provided by other Makefiles.
 - Every variable has a prefix, to avoid conflicts with other Makefiles.
-- The Makefile for running Terraform commands uses the prefix *stack-* for targets and the prefix *SF_* for variables.
+- The Makefile for running Terraform commands uses the prefix *stack-* for targets and the prefix *ST_* for variables.
 - The Makefile for building a Docker container for tools uses the prefix *stacktools-* for targets and the prefix *STACKTOOLS_* for variables.
 
 ## Dependencies

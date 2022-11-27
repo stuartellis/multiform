@@ -1,76 +1,82 @@
 # Multiform
 
-> /!\ EXPERIMENTAL: This project is under development.
+> /!\ **EXPERIMENTAL:** This project is under development.
 
-A test monorepo project with multiple infrastructure components.
+A test monorepo project with multiple infrastructure components and reusable tooling.
 
-Each infrastructure component is a separate Terraform root module. The project uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces) to support deploying multiple instances of the same component to the same environment.
+Each infrastructure component is a separate Terraform root module. The tooling uses built-in features of Terraform to support both multiple components and deploying multiple instances of the same component to the same environment.
 
-The Terraform root modules are referred to as *stacks*. The tooling that runs Terraform on stacks is referred to as *stackform*.
+The Terraform root modules are referred to as *stacks*. The tooling that runs Terraform is named *stacktools* for convenience.
 
-The tooling uses UNIX shell, Makefiles and the [jq](https://stedolan.github.io/jq/) utility. This project also includes an alternative implementation in Python 3. By default, the tooling uses Docker and a container to provide Terraform. You can override this to either provide your own container image, or use a separate copy of Terraform.
+You can add the *stacktools* to any project by copying three files into the project repository. The tooling only requires a UNIX shell, the Make utility and the [jq](https://stedolan.github.io/jq/) command-line tool.
 
-## How to Add Tooling to a Project
+By default, the tools use Docker and a container to provide Terraform. You can override this to either provide your own container image, or use a separate copy of Terraform.
 
-The tooling consists of these three files:
+> **The Stacks Specification:** The *stacktools* follow a [documented and versioned set of conventions](https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/0.4.0/README.md). This enables you to upgrade or replace the tools at any time, without changing your Terraform code.
 
-- make/tools/stackform/stackform-cli.mk
-- make/tools/stackform/stackform-tools-container.mk
-- docker/tools/stackform/stackform-tools.dockerfile
+## Setting Up This Example Project
 
-The following *include* and *variables* and must be present in the top-level Makefile for your project:
+### Visual Studio Code
 
-```make
-PROJECT_DIR		:= $(shell pwd)
-ENVIRONMENT		?= dev
+This project includes the configuration for a [Development Container](https://containers.dev/). This means that Visual Studio Code and Visual Studio can set up a working environment for you on any operating system.
 
-include make/tools/stackform/*.mk
-```
+To run the project on Visual Studio Code:
 
-> This does not interfere with any other use of Make. All of the targets and variables in the *mk* files are namespaced.
+1. Ensure that Docker is running
+2. Ensure that the **Dev Containers** extension is installed in Visual Studio Code
+3. Open the project as a folder in Visual Studio Code
+4. Accept the option to reopen the project in a development container when prompted.
+5. Run *make stackrunner-build* to create the Docker container for Terraform
 
-All of the files for Terraform are in the directory *terraform1/*. Refer to the conventions README for the expected directory structure:
+### Manual Project Setup
 
-https://github.com/stuartellis/multiform/tree/main/docs/tf-stacks-spec/0.4.0/README.md
-
-Any other directories that contain Terraform code are ignored.
-
-> If you fork this repository, update the URL in the file *make/tools/stackform/stackform-cli.mk* to point to the conventions README in your fork.
-
-## Dependencies
+The Stack Tools require:
 
 - A UNIX shell
 - *GNU Make* 3 or above 
 - [jq](https://stedolan.github.io/jq/)
 - EITHER: Docker OR provide Terraform 1.x separately
 
-The tooling is compatible with the UNIX shell and Make versions that are provided by *macOS*.
+The tooling is compatible with the UNIX shell and Make versions that are provided by macOS. You can install *jq* and Docker on macOS with whatever tools that you prefer.
 
-> /!\ This project is not yet tested on WSL. It should work correctly on any WSL environment that has Make, jq and Docker installed.
+> /!\ **WSL:** The project and tooling are not yet tested on WSL. They should work correctly on any WSL environment that has Make, jq and Docker installed. Alternatively, use the Development Container.
 
-The alternative Python implementation requires Python 3.8 or above. It only uses the Python standard library, and requires no other Python packages.
+## How to Add The Tooling to Another Project
 
-## Setup
+The *stacktools* consist of these three files:
 
-This project includes the configuration for a [Development Container](https://containers.dev/). This means that Visual Studio Code and Visual Studio can automatically set up a working environment for you.
+- make/tools/stacktools/cli.mk
+- make/tools/stacktools/runner.mk
+- docker/tools/stacktools/runner.dockerfile
 
-To run the project on Visual Studio Code:
+The following *include* and *variables* must be present in the top-level Makefile for your project:
 
-1. Ensure that Docker is running
-2. Ensure that the **Dev Containers** extension is installed on Visual Studio Code
-3. Open the project as a folder in Visual Studio Code
-4. Accept the option to reopen the project in a development container when prompted.
-5. Run *make stacktools-build* to create the Docker container for Terraform
+```make
+PROJECT_DIR		:= $(shell pwd)
+ENVIRONMENT		?= dev
+
+include make/tools/stacktools/*.mk
+```
+
+> This does not interfere with any other use of Make. All of the targets and variables in the *mk* files are namespaced.
+
+All of the files for Terraform are in the directory *terraform1/*. Refer to the conventions for the expected directory structure:
+
+https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/0.4.0/README.md
+
+Any other directories that contain Terraform code are ignored.
+
+> If you fork this repository, update the URL in the file *make/tools/stacktools/cli.mk* to point to the conventions README in your fork.
 
 ## Usage
 
 Use Make to run the appropriate commands.
 
-Before you run other commands, use the *stacktools-build* target to create a Docker container image for Terraform:
+Before you run other commands, use the *stackrunner-build* target to create a Docker container image for Terraform:
 
-    make stacktools-build
+    make stackrunner-build
 
-This creates the container image *stacktools:developer*.
+This creates the container image *stacktools-runner:developer*.
 
 Make targets for Terraform stacks use the prefix *stack-*. For example:
 
@@ -79,19 +85,19 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
 
 Specify *ENVIRONMENT* to create a deployment of the stack in the target environment:
 
-    make stack-apply STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=dev
+    make stack-apply ENVIRONMENT=dev STACK_NAME=example_app
 
 Specify *STACK_VARIANT* to create an alternate deployment of the same stack in the same environment:
 
-    make stack-apply STACK_NAME=example_app STACK_VARIANT=feature1 ENVIRONMENT=dev
+    make stack-apply ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
 
-By default, the tooling runs every Terraform command in a temporary container. To run Terraform without a container, set *SF_RUN_CONTAINER=false*. For example:
+By default, the tooling runs every Terraform command in a temporary container. To run Terraform without a container, set *ST_RUN_CONTAINER=false*. For example:
 
-    make stack-fmt STACK_NAME=example_app SF_RUN_CONTAINER=false
+    make stack-fmt STACK_NAME=example_app ST_RUN_CONTAINER=false
 
-To specify a different container image for Terraform, set the *SF_TOOLS_DOCKER_IMAGE* variable to the name of the container:
+To specify a different container image for Terraform, set the *STACK_RUNNER_IMAGE* variable to the name of the container:
 
-    make stack-fmt STACK_NAME=example_app SF_TOOLS_DOCKER_IMAGE=stackform-tools:0.4.2
+    make stack-fmt STACK_NAME=example_app STACK_RUNNER_IMAGE=mytools-runner:1.4.5
 
 ## Terraform State
 
@@ -99,21 +105,29 @@ Each stack always has a separate Terraform state file for each environment. The 
 
 ## More About Containers
 
-### Development Containers
-
-The *.devcontainer/* directory provides Development Container configuration files that are compatible with the [Development Container specification](https://containers.dev/). They provides a Linux development environment with all of the dependencies that the project requires.
-
 ### Automation and CI/CD
 
-The Dockerfile for *stacktools* containers includes Make and [jq](https://stedolan.github.io/jq/), as well as Terraform. This means that you can use it to provide a complete environment to deploy your project with Continuous Integration.
+The Dockerfile for *stacktools-runner* containers includes Make and [jq](https://stedolan.github.io/jq/), as well as Terraform. This means that you can use a *stacktools-runner* container to provide a complete environment to deploy your project with Continuous Integration.
 
-If you run all of the deployment process for your project in a *stacktools* container, consider using *SF_RUN_CONTAINER=false* to prevent the tooling from creating a new temporary container for each command.
+If you run all of the deployment process for your project in a *stacktools-runner* container, consider using *ST_RUN_CONTAINER=false* to prevent the tooling from creating a new temporary container for each command.
 
 ### Cross-Architecture Support
 
-By default, *stacktools-build* builds the *stacktools* container image for the same CPU architecture as the machine that the command is run on. To build for another CPU architecture, override STACKTOOLS_TARGET_CPU_ARCH. For example, specify *arm64* for ARM:
+By default, *stackrunner-build* builds the *stacktools-runner* container image for the same CPU architecture as the machine that the command is run on. To build for another CPU architecture, override *STACKRUNNER_TARGET_CPU_ARCH*. For example, specify *arm64* for ARM:
 
-    make stacktools-build STACKTOOLS_TARGET_CPU_ARCH=arm64
+    make stackrunner-build STACKRUNNER_TARGET_CPU_ARCH=arm64
+
+### Runner Containers
+
+These images are built to provide an environment for running Terraform and the other requirements for *stacktools*.
+
+The defaults for the *stacktools-runner* container image use Alpine Linux to produce small images.
+
+### Development Containers
+
+The *.devcontainer/* directory provides Development Container configuration files that are compatible with the [Development Container specification](https://containers.dev/). This provides a Linux development environment with all of the dependencies that the project requires.
+
+The Development Containers configuration provides a Debian container for compatibility with Python code.
 
 ---
 
@@ -121,7 +135,7 @@ By default, *stacktools-build* builds the *stacktools* container image for the s
 
 - Complete support for CI/CD.
 - Add guards in Make for undefined PROJECT_DIR, STACK_NAME or ENVIRONMENT variables.
-- Add self-update target for stackform files, to enable refreshes
+- Add self-update target for stacktools files, to enable refreshes
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
 - Provide guidance on executing commands on multiple stacks.
