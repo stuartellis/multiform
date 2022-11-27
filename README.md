@@ -18,7 +18,7 @@ By default, the tools use Docker and a container to provide Terraform. You can o
 
 ### Visual Studio Code
 
-This project includes the configuration for a [Development Container](https://containers.dev/). This means that Visual Studio Code and Visual Studio can set up a working environment for you on any operating system.
+This project includes the configuration for a [development container](https://containers.dev/). This means that Visual Studio Code and Visual Studio can set up a working environment for you on any operating system.
 
 To run the project on Visual Studio Code:
 
@@ -39,7 +39,7 @@ The Stack Tools require:
 
 The tooling is compatible with the UNIX shell and Make versions that are provided by macOS. You can install *jq* and Docker on macOS with whatever tools that you prefer.
 
-> /!\ **WSL:** The project and tooling are not yet tested on WSL. They should work correctly on any WSL environment that has Make, jq and Docker installed. Alternatively, use the Development Container.
+> /!\ **WSL:** The project and tooling are not yet tested on WSL. They should work correctly on any WSL environment that has Make, jq and Docker installed. Alternatively, use a development container.
 
 ## How to Add The Tooling to Another Project
 
@@ -99,6 +99,27 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 
     make stack-fmt STACK_NAME=example_app STACK_RUNNER_IMAGE=mytools-runner:1.4.5
 
+### Current *stack* Targets
+
+| Name           | Description                          |
+|----------------|--------------------------------------|
+| stack-apply    | Terraform apply for a stack          |
+| stack-console  | Terraform console for a stack        |
+| stack-destroy  | Terraform apply -destroy for a stack |
+| stack-fmt      | Terraform fmt for a stack            |
+| stack-info     | Show information for a stack         |
+| stack-init     | Terraform init for a stack           |
+| stack-plan     | Terraform plan for a stack           |
+| stack-shell    | Open a shell                         |
+| stack-validate | Terraform validate for a stack       |
+
+### Current *stackrunner* Targets
+
+| Name              | Description           |
+|-------------------|-----------------------|
+| stackrunner-build | Build container image |
+| stackrunner-info  | Show details          |
+
 ## Terraform State
 
 Each stack always has a separate Terraform state file for each environment. The variants feature uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces). This means that Terraform creates an extra state file for each variant.
@@ -119,7 +140,7 @@ Use the *ST_RUNNER_VERSION* variable to build a container image with a fixed ver
 
 ### Automation and CI/CD
 
-You can use a *stacktools-runner* container to provide an environment to deploy Terraform with Continuous Integration. In most cases, use your own container image. You can run *stacktools* in any container that includes Make, jq, a UNIX shell and either Docker-in-Docker or Terraform.
+You can use a *stacktools-runner* container to provide an environment to deploy Terraform with Continuous Integration. In most cases, use your own container image instead. You can run *stacktools* in any container that includes Make, jq, a UNIX shell and either Docker-in-Docker or Terraform.
 
 If you run all of the deployment process for your project in a container, include a copy of Terraform in the container and use *ST_RUN_CONTAINER=false* to prevent the tooling from creating a new temporary container for each command.
 
@@ -133,9 +154,9 @@ By default, *stackrunner-build* builds the *stacktools-runner* container image f
 
 ### Development Containers
 
-The *.devcontainer/* directory provides Development Container configuration files that are compatible with the [Development Container specification](https://containers.dev/). This provides a Linux development environment with all of the dependencies that the project requires.
+The *.devcontainer/* directory provides development container configuration files that are compatible with the [Development Container specification](https://containers.dev/). This provides a Linux development environment with all of the dependencies that the project requires.
 
-The Development Containers configuration provides a Debian container for compatibility with Python code.
+The development containers configuration provides a Debian container for compatibility with Python code.
 
 ---
 
