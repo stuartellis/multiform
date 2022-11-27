@@ -14,6 +14,48 @@ It also enables you to use [Terraform workspaces](https://developer.hashicorp.co
 
 ## Requirements
 
+This diagram summarizes the required directory structure and files:
+
+```
+<project>/
+|
+|- terraform1/
+    |
+    |- .gitignore
+    |
+    |- stacks/
+        |
+        |- definitions/
+        |   |
+        |   |- <stack_one>/
+        |   |     |
+        |   |     |- <Terraform code>
+        |   |
+        |   | 
+        |   |- <stack_two>/
+        |         |
+        |         |- <Terraform code>
+        |
+        |- environments/
+            |
+            |- all/
+            |   |
+            |   |- stack_one.tfvars
+            |   |- stack_two.tfvars
+            |
+            |- dev/
+            |   |
+            |   |- backend.json
+            |   |- stack_one.tfvars
+            |   |- stack_two.tfvars
+            |
+            |- test/
+                |
+                |- backend.json
+                |- stack_one.tfvars
+                |- stack_two.tfvars
+```
+
 ### Required Directory Structure
 
 - Each project has a root directory for Terraform code and configuration, called *terraform1/*
@@ -76,6 +118,8 @@ The *variant* is an identifier for a specific instance of a stack. It is an empt
 
 ### Terraform Var Files
 
+These files may contain no values.
+
 #### Global
 
 - A global configuration that applies to a stack in all environments. The global vars file is a *.tfvars* file in *terraform1/stacks/environments/all/* with the same name as the stack. 
@@ -86,7 +130,19 @@ The *variant* is an identifier for a specific instance of a stack. It is an empt
 
 ### Backend Configuration
 
-#### Files
+#### Backend JSON File
+
+Example *backend.json* file:
+
+```
+{
+    "aws": {
+        "bucket": "234567891012-terraform",
+        "dynamodb_table": "terraform-state-lock_234567891012_dev",
+        "region": "eu-west-2"
+    }
+}
+```
 
 - Tools read the settings for the backend from a JSON file. Each environment has a *backend.json* file in the relevant subdirectory in *environments/* subdirectory.
 - A *backend.json* file has an entry for the cloud provider. For AWS, this is *aws*.
@@ -95,10 +151,7 @@ The *variant* is an identifier for a specific instance of a stack. It is an empt
 
 #### Terraform *backend*
 
-- Each stack should use the *s3* remote state backend.
-- The Terraform backend should declare a *workspace_key_prefix* with the value *workspaces*. Provide all other settings when Terraform runs.
-
-Here is an example:
+Here is an example of the Terraform:
 
 ```terraform
 terraform {
@@ -116,6 +169,9 @@ terraform {
   }
 }
 ```
+
+- Each stack should use the *s3* remote state backend.
+- The Terraform backend should declare a *workspace_key_prefix* with the value *workspaces*. Provide all other settings when Terraform runs.
 
 ---
 
@@ -139,12 +195,9 @@ terraform {
 
 - Every resource name is prefixed with the *variant* variable, so that multiple instances of a stack may be deployed to the same cloud account with the same *environment* definition.
 
-### AWS
+### AWS Provider
 
-- A stack should not hard-code the IAM execution role that it uses with AWS.
-- Each stack should be deployable on any AWS cloud account that can provide the resources that the stack depends on.
-- Each stack should publish an ARN for each key resource that it manages to Parameter Store, in the same account and region.
-- Use the *default_tags* option of the AWS provider to set tags for all resources. For example:
+Example *aws* provider:
 
 ```terraform
 provider "aws" {
@@ -158,6 +211,11 @@ provider "aws" {
   }
 }
 ```
+
+- A stack should not hard-code the IAM execution role that it uses with AWS.
+- Each stack should be deployable on any AWS cloud account that can provide the resources that the stack depends on.
+- Each stack should publish an ARN for each key resource that it manages to Parameter Store, in the same account and region.
+- Use the *default_tags* option of the AWS provider to set tags for all resources. For example:
 
 ### Code Deployment
 
