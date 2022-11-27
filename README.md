@@ -101,17 +101,17 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 
 ### Current *stack* Targets
 
-| Name           | Description                          |
-|----------------|--------------------------------------|
-| stack-apply    | Terraform apply for a stack          |
-| stack-console  | Terraform console for a stack        |
-| stack-destroy  | Terraform apply -destroy for a stack |
-| stack-fmt      | Terraform fmt for a stack            |
-| stack-info     | Show information for a stack         |
-| stack-init     | Terraform init for a stack           |
-| stack-plan     | Terraform plan for a stack           |
-| stack-shell    | Open a shell                         |
-| stack-validate | Terraform validate for a stack       |
+| Name           | Description                            |
+|----------------|----------------------------------------|
+| stack-apply    | *terraform apply* for a stack          |
+| stack-console  | *terraform console* for a stack        |
+| stack-destroy  | *terraform apply -destroy* for a stack |
+| stack-fmt      | *terraform fmt* for a stack            |
+| stack-info     | Show information for a stack           |
+| stack-init     | *terraform init* for a stack           |
+| stack-plan     | *terraform plan* for a stack           |
+| stack-shell    | Open a shell                           |
+| stack-validate | *terraform validate* for a stack       |
 
 ### Current *stackrunner* Targets
 
@@ -164,6 +164,8 @@ The development containers configuration provides a Debian container for compati
 
 - Complete support for CI/CD.
 - Add guards in Make for undefined PROJECT_DIR, STACK_NAME or ENVIRONMENT variables.
+- Add target to generate directory structure for terraform1/
+- Add target to generate a stack in terraform1/, copying content from terraform1/stacks/definitions/template/ if present
 - Add self-update target for stacktools files, to enable refreshes
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
