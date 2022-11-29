@@ -113,12 +113,25 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 | stack-shell    | Open a shell                           |
 | stack-validate | *terraform validate* for a stack       |
 
+### Current *stacks* Targets
+
+| Name                | Description                  |
+|---------------------|------------------------------|
+| stacks-definitions  | List the stacks              |
+| stacks-environments | List environments for stacks |
+
 ### Current *stackrunner* Targets
 
 | Name              | Description           |
 |-------------------|-----------------------|
 | stackrunner-build | Build container image |
 | stackrunner-info  | Show details          |
+
+### Current *stacktools* Targets
+
+| Name            | Description                     |
+|-----------------|---------------------------------|
+| stacktools-info | Show details for stacktools     |
 
 ## Terraform State
 

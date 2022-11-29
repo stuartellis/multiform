@@ -11,7 +11,7 @@
 
 ###### Versions ######
 
-ST_STACKTOOLS_VERSION	:= 0.4.6
+ST_STACKTOOLS_VERSION	:= 0.4.7
 ST_STACKS_SPEC_VERSION	:= 0.4.0
 ST_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/$(ST_STACKS_SPEC_VERSION)/README.md
 
@@ -27,13 +27,14 @@ ST_RUN_CONTAINER	:= true
 ###### Paths ######
 
 ST_CONTAINER_BIND_DIR	:= /src
-ST_BACKEND_DIR			:= $(PROJECT_DIR)/terraform1/stacks/environments
-ST_BACKEND_FILE			:= $(ST_BACKEND_DIR)/$(ENVIRONMENT)/backend.json
+ST_DEFS_DIR				:= $(PROJECT_DIR)/terraform1/stacks/definitions
+ST_ENVS_DIR				:= $(PROJECT_DIR)/terraform1/stacks/environments
+ST_BACKEND_FILE			:= $(ST_ENVS_DIR)/$(ENVIRONMENT)/backend.json
 
 ifeq ($(ST_RUN_CONTAINER), true)
-	ST_STACKS_DIR		:= $(ST_CONTAINER_BIND_DIR)/terraform1/stacks
+	ST_TF_BASE_DIR		:= $(ST_CONTAINER_BIND_DIR)/terraform1/stacks
 else
-	ST_STACKS_DIR		:= $(PROJECT_DIR)/terraform1/stacks
+	ST_TF_BASE_DIR		:= $(PROJECT_DIR)/terraform1/stacks
 endif
 
 ###### Terraform Variables ######
@@ -51,8 +52,8 @@ ifeq ($(MAKECMDGOALS), stack-init)
 	endif
 endif
 
-ST_TF_WORKING_DIR	:= -chdir=$(ST_STACKS_DIR)/definitions/$(STACK_NAME)
-ST_TF_VAR_FILES		:= -var-file=$(ST_STACKS_DIR)/environments/all/$(STACK_NAME).tfvars -var-file=$(ST_STACKS_DIR)/environments/$(ENVIRONMENT)/$(STACK_NAME).tfvars
+ST_TF_CHDIR_OPT		:= -chdir=$(ST_TF_BASE_DIR)/definitions/$(STACK_NAME)
+ST_TF_VAR_FILES_OPT	:= -var-file=$(ST_TF_BASE_DIR)/environments/all/$(STACK_NAME).tfvars -var-file=$(ST_TF_BASE_DIR)/environments/$(ENVIRONMENT)/$(STACK_NAME).tfvars
 
 ifdef AWS_ACCESS_KEY_ID
 	ST_DOCKER_ENV_VARS := -e TF_WORKSPACE=$(ST_WORKSPACE) -e AWS_REGION=$(AWS_REGION) -e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) -e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
@@ -63,11 +64,11 @@ endif
 ifdef STACK_VARIANT
 	ST_WORKSPACE	:= $(STACK_VARIANT)
 	ST_VARIANT_ID	:= $(STACK_VARIANT)
-	ST_TF_VARS		:= -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)" -var="variant=$(ST_VARIANT_ID)"
+	ST_TF_VARS_OPT	:= -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)" -var="variant=$(ST_VARIANT_ID)"
 else
 	ST_WORKSPACE	:= default
 	ST_VARIANT_ID 	:=
-	ST_TF_VARS		:= -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)"
+	ST_TF_VARS_OPT	:= -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)"
 endif
 
 ###### Terraform Command ######
@@ -92,28 +93,45 @@ endif
 
 ###### Targets ######
 
-.PHONY: stack-apply
-stack-apply: stack-plan
-	@$(ST_TF_RUN_CMD) $(ST_TF_WORKING_DIR) apply -auto-approve $(ST_TF_VARS) $(ST_TF_VAR_FILES)
-
-.PHONY: stack-console
-stack-console:
-	@$(ST_TF_RUN_CMD) $(ST_TF_WORKING_DIR) console $(ST_TF_VARS) $(ST_TF_VAR_FILES)
-
-.PHONY: stack-destroy
-stack-destroy: stack-plan
-	@$(ST_TF_RUN_CMD) $(ST_TF_WORKING_DIR) apply -destroy -auto-approve $(ST_TF_VARS) $(ST_TF_VAR_FILES)
-
-.PHONY: stack-fmt
-stack-fmt:
-	@$(ST_TF_RUN_CMD) $(ST_TF_WORKING_DIR) fmt
-
-.PHONY: stack-info
-stack-info:
+.PHONY: stacktools-info
+stacktools-info:
 	@echo "Stack Tools Version: $(ST_STACKTOOLS_VERSION)"
 	@echo "Stacks Specification Version: $(ST_STACKS_SPEC_VERSION)"
 	@echo "Stacks Specification URL: $(ST_STACKS_SPEC_URL)"
-	@echo "Stacks Directory: $(ST_STACKS_DIR)"
+	@echo "Stacks Directory: $(ST_TF_BASE_DIR)"
+
+.PHONY: stacks-environments
+stacks-environments:
+	@ls $(ST_ENVS_DIR) | sed s/all// | grep '\S'
+
+.PHONY: stacks-definitions
+stacks-definitions:
+	@ls $(ST_DEFS_DIR)
+
+###### Stack Targets ######
+
+.PHONY: stack-apply
+stack-apply: stack-plan
+	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) apply -auto-approve $(ST_TF_VARS_OPT) $(ST_TF_VAR_FILES_OPT)
+
+.PHONY: stack-check-fmt
+stack-check-fmt:
+	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) fmt -check -diff -recursive
+
+.PHONY: stack-console
+stack-console:
+	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) console $(ST_TF_VARS_OPT) $(ST_TF_VAR_FILES_OPT)
+
+.PHONY: stack-destroy
+stack-destroy: stack-plan
+	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) apply -destroy -auto-approve $(ST_TF_VARS_OPT) $(ST_TF_VAR_FILES_OPT)
+
+.PHONY: stack-fmt
+stack-fmt:
+	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) fmt
+
+.PHONY: stack-info
+stack-info:
 	@echo "Stack Name: $(STACK_NAME)"
 	@echo "Stack Variant Identifier: $(ST_VARIANT_ID)"
 	@echo "Stack Environment: $(ENVIRONMENT)"
@@ -121,11 +139,11 @@ stack-info:
 
 .PHONY: stack-init
 stack-init:
-	$(ST_TF_RUN_CMD) $(ST_TF_WORKING_DIR) init $(ST_TF_BACKEND)
+	$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) init $(ST_TF_BACKEND)
 
 .PHONY: stack-plan
 stack-plan: stack-validate
-	@$(ST_TF_RUN_CMD) $(ST_TF_WORKING_DIR) plan $(ST_TF_VARS) $(ST_TF_VAR_FILES)
+	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) plan $(ST_TF_VARS_OPT) $(ST_TF_VAR_FILES_OPT)
 
 .PHONY: stack-shell
 stack-shell:
@@ -133,4 +151,4 @@ stack-shell:
 
 .PHONY: stack-validate
 stack-validate:
-	@$(ST_TF_RUN_CMD) $(ST_TF_WORKING_DIR) validate
+	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) validate
