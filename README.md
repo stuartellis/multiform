@@ -80,7 +80,6 @@ This creates the container image *stacktools-runner:developer*.
 
 Make targets for Terraform stacks use the prefix *stack-*. For example:
 
-    make stack-info
     make stack-fmt STACK_NAME=example_app
 
 Specify *ENVIRONMENT* to create a deployment of the stack in the target environment:
@@ -99,7 +98,7 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 
     make stack-fmt STACK_NAME=example_app STACK_RUNNER_IMAGE=mytools-runner:1.4.5
 
-### Current *stack* Targets
+### *stack* Targets
 
 | Name           | Description                            |
 |----------------|----------------------------------------|
@@ -113,21 +112,21 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 | stack-shell    | Open a shell                           |
 | stack-validate | *terraform validate* for a stack       |
 
-### Current *stacks* Targets
+### *stacks* Targets
 
 | Name                | Description                  |
 |---------------------|------------------------------|
 | stacks-definitions  | List the stacks              |
 | stacks-environments | List environments for stacks |
 
-### Current *stackrunner* Targets
+### *stackrunner* Targets
 
 | Name              | Description           |
 |-------------------|-----------------------|
 | stackrunner-build | Build container image |
 | stackrunner-info  | Show details          |
 
-### Current *stacktools* Targets
+### *stacktools* Targets
 
 | Name            | Description                     |
 |-----------------|---------------------------------|
