@@ -102,11 +102,11 @@ stacktools-info:
 
 .PHONY: stacks-environments
 stacks-environments:
-	@ls $(ST_ENVS_DIR) | sed s/all// | grep '\S'
+	@ls $(ST_ENVS_DIR) | sed 's/all//; s/template//' | grep '\S'
 
 .PHONY: stacks-definitions
 stacks-definitions:
-	@ls $(ST_DEFS_DIR)
+	@ls $(ST_DEFS_DIR) | sed 's/template//' | grep '\S'
 
 ###### Stack Targets ######
 

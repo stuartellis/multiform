@@ -76,7 +76,7 @@ Before you run other commands, use the *stackrunner-build* target to create a Do
 
     make stackrunner-build
 
-This creates the container image *stacktools-runner:developer*.
+This creates the container image *stacktools-runner*. By default, the tooling runs every Terraform command in a temporary container with this image.
 
 Make targets for Terraform stacks use the prefix *stack-*. For example:
 
@@ -90,7 +90,7 @@ Specify *STACK_VARIANT* to create an alternate deployment of the same stack in t
 
     make stack-apply ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
 
-By default, the tooling runs every Terraform command in a temporary container. To run Terraform without a container, set *ST_RUN_CONTAINER=false*. For example:
+To run Terraform without a container, set *ST_RUN_CONTAINER=false*. For example:
 
     make stack-fmt STACK_NAME=example_app ST_RUN_CONTAINER=false
 

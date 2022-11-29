@@ -1,0 +1,7 @@
+{
+    "aws": {
+        "bucket": "FIXME",
+        "dynamodb_table": "FIXME",
+        "region": "eu-west-2"
+    }
+}
