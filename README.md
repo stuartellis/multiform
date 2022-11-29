@@ -12,7 +12,7 @@ You can add the *stacktools* to any project by copying three files into the proj
 
 By default, the tools use Docker and a container to provide Terraform. You can override this to either provide your own container image, or use a separate copy of Terraform.
 
-> **The Stacks Specification:** The *stacktools* follow a [documented and versioned set of conventions](https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/0.4.0/README.md). These conventions only require three variables in each root module. They enable you to upgrade, replace or remove the tools at any time, without changing your Terraform code.
+> **The Stacks Specification:** The *stacktools* follow a [documented and versioned set of conventions](https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/0.4.0/README.md). Each stack is a standard Terraform root module. This means that you can use these modules without the *stacktools*, and develop other tools to work with the stacks.
 
 ## Setting Up This Example Project
 
