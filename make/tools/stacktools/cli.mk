@@ -11,7 +11,7 @@
 
 ###### Versions ######
 
-ST_STACKTOOLS_VERSION	:= 0.4.7
+ST_STACKTOOLS_VERSION	:= 0.4.8
 ST_STACKS_SPEC_VERSION	:= 0.4.0
 ST_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/$(ST_STACKS_SPEC_VERSION)/README.md
 
@@ -46,20 +46,14 @@ ifeq ($(MAKECMDGOALS), stack-init)
 		ST_AWS_BACKEND_BUCKET		:= $(shell echo '$(ST_BACKEND_AWS)' | jq '.bucket')
 		ST_AWS_BACKEND_DDB_TABLE	:= $(shell echo '$(ST_BACKEND_AWS)' | jq '.dynamodb_table')
 		ST_AWS_BACKEND_KEY			:= "stacks/$(ENVIRONMENT)/$(STACK_NAME)"
-		ST_TF_BACKEND				:= -backend-config=region=$(ST_AWS_BACKEND_REGION) -backend-config=bucket=$(ST_AWS_BACKEND_BUCKET) -backend-config=key=$(ST_AWS_BACKEND_KEY) -backend-config=dynamodb_table=$(ST_AWS_BACKEND_DDB_TABLE)
+		ST_TF_BACKEND_OPT			:= -backend-config=region=$(ST_AWS_BACKEND_REGION) -backend-config=bucket=$(ST_AWS_BACKEND_BUCKET) -backend-config=key=$(ST_AWS_BACKEND_KEY) -backend-config=dynamodb_table=$(ST_AWS_BACKEND_DDB_TABLE)
 	else
-		ST_TF_BACKEND				:=
+		ST_TF_BACKEND_OPT			:=
 	endif
 endif
 
 ST_TF_CHDIR_OPT		:= -chdir=$(ST_TF_BASE_DIR)/definitions/$(STACK_NAME)
 ST_TF_VAR_FILES_OPT	:= -var-file=$(ST_TF_BASE_DIR)/environments/all/$(STACK_NAME).tfvars -var-file=$(ST_TF_BASE_DIR)/environments/$(ENVIRONMENT)/$(STACK_NAME).tfvars
-
-ifdef AWS_ACCESS_KEY_ID
-	ST_DOCKER_ENV_VARS := -e TF_WORKSPACE=$(ST_WORKSPACE) -e AWS_REGION=$(AWS_REGION) -e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) -e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
-else
-	ST_DOCKER_ENV_VARS := -e TF_WORKSPACE=$(ST_WORKSPACE)
-endif
 
 ifdef STACK_VARIANT
 	ST_WORKSPACE	:= $(STACK_VARIANT)
@@ -69,6 +63,12 @@ else
 	ST_WORKSPACE	:= default
 	ST_VARIANT_ID 	:=
 	ST_TF_VARS_OPT	:= -var="stack_name=$(STACK_NAME)" -var="environment=$(ENVIRONMENT)"
+endif
+
+ifdef AWS_ACCESS_KEY_ID
+	ST_DOCKER_ENV_VARS := -e TF_WORKSPACE=$(ST_WORKSPACE) -e AWS_REGION=$(AWS_REGION) -e AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) -e AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
+else
+	ST_DOCKER_ENV_VARS := -e TF_WORKSPACE=$(ST_WORKSPACE)
 endif
 
 ###### Terraform Command ######
@@ -102,11 +102,11 @@ stacktools-info:
 
 .PHONY: stacks-environments
 stacks-environments:
-	@ls $(ST_ENVS_DIR) | sed 's/all//; s/template//' | grep '\S'
+	@ls $(ST_ENVS_DIR) | sed s/all// | grep '\S'
 
-.PHONY: stacks-definitions
-stacks-definitions:
-	@ls $(ST_DEFS_DIR) | sed 's/template//' | grep '\S'
+.PHONY: stacks-list
+stacks-list:
+	@ls $(ST_DEFS_DIR)
 
 ###### Stack Targets ######
 
@@ -139,7 +139,7 @@ stack-info:
 
 .PHONY: stack-init
 stack-init:
-	$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) init $(ST_TF_BACKEND)
+	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) init $(ST_TF_BACKEND_OPT)
 
 .PHONY: stack-plan
 stack-plan: stack-validate

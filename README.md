@@ -116,7 +116,7 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 
 | Name                | Description                  |
 |---------------------|------------------------------|
-| stacks-definitions  | List the stacks              |
+| stacks-list         | List the stacks              |
 | stacks-environments | List environments for stacks |
 
 ### *stackrunner* Targets
