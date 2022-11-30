@@ -107,6 +107,7 @@ The unique name of the stack. The *stack_name* should start with the name of the
 - This variable is a string that begins with a letter
 - It must contains only alphanumeric characters and hyphens. Characters must be in lowercase. 
 - It must have a maximum length of 30 characters.
+- Avoid using these words in the stack name: *all*, *default*, *global*, *main* and *template*.
 - The *stack_name* variable should have no default value.
 
 #### environment
@@ -117,6 +118,7 @@ The environment where the stack is deployed.
 - This variable is a string that begins with a letter.
 - It must contain only alphanumeric characters and hyphens. Characters must be in lowercase.
 - It must have a maximum length of 10 characters.
+- Avoid using these words in the environment name: *all*, *default*, *global*, *main* and *template*.
 - The *environment* variable should have no default value.
 
 #### variant
@@ -127,6 +129,7 @@ The *variant* is an identifier for a specific instance of a stack. It is an empt
 - This variable is a string that begins with a letter. 
 - It must contain only alphanumeric characters and hyphens. Characters must be in lowercase. 
 - It must have a maximum length of 10 characters.
+- Avoid using these words in the variant name: *all*, *default*, *global*, *main* and *template*.
 - The *variant* should have a default value of an empty string.
 - If you are using a Terraform workspace, the *variant* should be the name of the workspace. 
 
