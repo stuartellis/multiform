@@ -58,7 +58,7 @@ ENVIRONMENT		?= dev
 include make/tools/stacktools/*.mk
 ```
 
-> This does not interfere with any other use of Make. All of the targets and variables in the *mk* files are namespaced.
+> This does not interfere with any other uses of Make. All of the targets and variables in these *mk* files are namespaced.
 
 Once you have added the Make configuration, run this command to generate the directory structure:
 
@@ -72,7 +72,7 @@ Any other directories that contain Terraform code are ignored.
 
 > If you fork this repository, update the URL in the file *make/tools/stacktools/cli.mk* to point to the conventions README in your fork.
 
-## Usage
+## Using the Stack Tools
 
 Use Make to run the appropriate commands.
 
