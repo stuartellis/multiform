@@ -110,7 +110,7 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 | stack-console  | *terraform console* for a stack        |
 | stack-destroy  | *terraform apply -destroy* for a stack |
 | stack-fmt      | *terraform fmt* for a stack            |
-| stack-forget   | Delete state for a stack variant       |
+| stack-forget   | Delete state for a stack variant.      |
 | stack-info     | Show information for a stack           |
 | stack-init     | *terraform init* for a stack           |
 | stack-plan     | *terraform plan* for a stack           |
@@ -183,6 +183,7 @@ The development containers configuration provides a Debian container for compati
 - Add guards in Make for undefined PROJECT_DIR, STACK_NAME or ENVIRONMENT variables.
 - Add .gitignore to documented setup process
 - Add target to generate a stack in terraform1/, copying content from terraform1/stacks/definitions/template/ if present
+- Clarify that *stack-forget* does not support deleting default Terraform workspaces.
 - Add self-update target for stacktools files, to enable refreshes
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
