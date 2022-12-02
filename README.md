@@ -60,6 +60,10 @@ include make/tools/stacktools/*.mk
 
 > This does not interfere with any other use of Make. All of the targets and variables in the *mk* files are namespaced.
 
+Once you have added the Make configuration, run this command to generate the directory structure:
+
+    make stacks-new-tree
+
 All of the files for Terraform are in the directory *terraform1/*. Refer to the conventions for the expected directory structure:
 
 https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/0.4.0/README.md
@@ -106,6 +110,7 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 | stack-console  | *terraform console* for a stack        |
 | stack-destroy  | *terraform apply -destroy* for a stack |
 | stack-fmt      | *terraform fmt* for a stack            |
+| stack-forget   | Delete state for a stack variant       |
 | stack-info     | Show information for a stack           |
 | stack-init     | *terraform init* for a stack           |
 | stack-plan     | *terraform plan* for a stack           |
@@ -114,10 +119,11 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 
 ### *stacks* Targets
 
-| Name                | Description                  |
-|---------------------|------------------------------|
-| stacks-list         | List the stacks              |
-| stacks-environments | List environments for stacks |
+| Name                | Description                           |
+|---------------------|---------------------------------------|
+| stacks-list         | List the stacks                       |
+| stacks-environments | List environments for stacks          |
+| stacks-new-tree     | Create directory structure for stacks |
 
 ### *stackrunner* Targets
 
@@ -174,7 +180,7 @@ The development containers configuration provides a Debian container for compati
 
 ## TODOs
 
-- Complete support for CI/CD.
+- Add .gitignore to setup
 - Add guards in Make for undefined PROJECT_DIR, STACK_NAME or ENVIRONMENT variables.
 - Add target to generate directory structure for terraform1/
 - Add target to generate a stack in terraform1/, copying content from terraform1/stacks/definitions/template/ if present

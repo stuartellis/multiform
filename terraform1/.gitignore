@@ -11,6 +11,11 @@ thumbs.db
 *.tfstate
 *.tfstate.*
 
+# Terraform plan files
+tfplan
+*.tfplan
+*.tfplan.*
+
 # Crash log files
 crash.log
 crash.*.log
