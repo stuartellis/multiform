@@ -180,9 +180,8 @@ The development containers configuration provides a Debian container for compati
 
 ## TODOs
 
-- Add .gitignore to setup
 - Add guards in Make for undefined PROJECT_DIR, STACK_NAME or ENVIRONMENT variables.
-- Add target to generate directory structure for terraform1/
+- Add .gitignore to documented setup process
 - Add target to generate a stack in terraform1/, copying content from terraform1/stacks/definitions/template/ if present
 - Add self-update target for stacktools files, to enable refreshes
 - Define standard path structure for Parameter Store.
