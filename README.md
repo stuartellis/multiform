@@ -70,6 +70,8 @@ https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/0.
 
 Any other directories that contain Terraform code are ignored.
 
+Ensure that your *.gitignore* files prevent Terraform state and temporary files from being added to source control.
+
 > If you fork this repository, update the URL in the file *make/tools/stacktools/cli.mk* to point to the conventions README in your fork.
 
 ## Using the Stack Tools
