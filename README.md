@@ -28,6 +28,8 @@ To run the project on Visual Studio Code:
 4. Accept the option to reopen the project in a development container when prompted.
 5. Run *make stackrunner-build* to create the Docker container for Terraform
 
+> The development containers configuration provides a Debian container for compatibility with Python code.
+
 ### Manual Project Setup
 
 The Stack Tools require:
@@ -90,16 +92,20 @@ Make targets for Terraform stacks use the prefix *stack-*. For example:
 
 Specify *ENVIRONMENT* to create a deployment of the stack in the target environment:
 
+    make stack-plan ENVIRONMENT=dev STACK_NAME=example_app
     make stack-apply ENVIRONMENT=dev STACK_NAME=example_app
 
 Specify *STACK_VARIANT* to create an alternate deployment of the same stack in the same environment:
 
+    make stack-plan ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
     make stack-apply ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
 
 To remove a variant, first *destroy* the instance of the stack, and then use *forget* to delete the Terraform state:
 
     make stack-destroy ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
     make stack-forget ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
+
+> The *stack-forget* target only works on variants, not on the default instances of the stack.
 
 To run Terraform without a container, set *ST_RUN_CONTAINER=false*. For example:
 
@@ -149,9 +155,7 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 
 Each stack always has a separate Terraform state file for each environment. The variants feature uses [Terraform workspaces](https://developer.hashicorp.com/terraform/language/state/workspaces). This means that Terraform creates an extra state file for each variant.
 
-## More About Containers
-
-### Runner Containers
+## The stacktools-runner Container Image
 
 The *stacktools-runner* images are built to provide a complete environment for running Terraform and the *stacktools*. This means that they include Make and jq as well as Terraform.
 
@@ -163,9 +167,11 @@ Use the *ST_RUNNER_VERSION* variable to build a container image with a fixed ver
 
     make stackrunner-build ST_RUNNER_VERSION=1.4.5
 
-### Automation and CI/CD
+## Automation and CI/CD
 
-You can use a *stacktools-runner* container to provide an environment to deploy Terraform with Continuous Integration. In most cases, use your own container image instead. You can run *stacktools* in any container that includes Make, jq, a UNIX shell and either Docker-in-Docker or Terraform.
+You can use a *stacktools-runner* container to provide an environment to deploy Terraform with Continuous Integration. In most cases, use your own container image instead.
+
+You can run *stacktools* in any container that includes Make, *jq*, a UNIX shell and either Docker-in-Docker (DIND) or Terraform.
 
 If you run all of the deployment process for your project in a container, include a copy of Terraform in the container and use *ST_RUN_CONTAINER=false* to prevent the tooling from creating a new temporary container for each command.
 
@@ -177,12 +183,6 @@ By default, *stackrunner-build* builds the *stacktools-runner* container image f
 
     make stackrunner-build ST_RUNNER_TARGET_CPU_ARCH=arm64
 
-### Development Containers
-
-The *.devcontainer/* directory provides development container configuration files that are compatible with the [Development Container specification](https://containers.dev/). This provides a Linux development environment with all of the dependencies that the project requires.
-
-The development containers configuration provides a Debian container for compatibility with Python code.
-
 ---
 
 ## TODOs
@@ -190,9 +190,10 @@ The development containers configuration provides a Debian container for compati
 - Add guards in Make for undefined PROJECT_DIR, STACK_NAME or ENVIRONMENT variables.
 - Add .gitignore to documented setup process
 - Add target to generate a stack in terraform1/, copying content from terraform1/stacks/definitions/template/ if present
-- Clarify that *stack-forget* does not support deleting default Terraform workspaces.
+- More friendly error message for *stack-forget* calls that try to delete default Terraform workspaces.
 - Add self-update target for stacktools files, to enable refreshes
 - Define standard path structure for Parameter Store.
 - Provide guidance on handling of secrets.
 - Provide guidance on executing commands on multiple stacks.
 - Improve guidance on cross-stack references.
+- Guidance for CI/CD pipelines
