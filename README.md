@@ -100,7 +100,7 @@ Specify *STACK_VARIANT* to create an alternate deployment of the same stack in t
     make stack-plan ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
     make stack-apply ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
 
-To remove a variant, first *destroy* the instance of the stack, and then use *forget* to delete the Terraform state:
+To delete a variant from the cloud, first *destroy* the instance of the stack, and then use *forget* to delete the Terraform state:
 
     make stack-destroy ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
     make stack-forget ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
