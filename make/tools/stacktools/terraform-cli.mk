@@ -1,4 +1,4 @@
-# Terraform Stack Tools - Commands
+# Stack Tools - Terraform Commands
 #
 # Makefile targets and variables
 #

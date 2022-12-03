@@ -45,8 +45,8 @@ The tooling is compatible with the UNIX shell and Make versions that are provide
 
 The *stacktools* consist of these three files:
 
-- make/tools/stacktools/cli.mk
-- make/tools/stacktools/runner.mk
+- make/tools/stacktools/terraform-cli.mk
+- make/tools/stacktools/runner-container.mk
 - docker/tools/stacktools/runner.dockerfile
 
 The following *include* and *variables* must be present in the top-level Makefile for your project:
@@ -95,6 +95,11 @@ Specify *ENVIRONMENT* to create a deployment of the stack in the target environm
 Specify *STACK_VARIANT* to create an alternate deployment of the same stack in the same environment:
 
     make stack-apply ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
+
+To remove a variant, first *destroy* the instance of the stack, and then use *forget* to delete the Terraform state:
+
+    make stack-destroy ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
+    make stack-forget ENVIRONMENT=dev STACK_NAME=example_app STACK_VARIANT=feature1
 
 To run Terraform without a container, set *ST_RUN_CONTAINER=false*. For example:
 
