@@ -11,7 +11,7 @@
 
 ###### Versions ######
 
-ST_STACKTOOLS_VERSION	:= 0.4.9
+ST_STACKTOOLS_VERSION	:= 0.4.10
 ST_STACKS_SPEC_VERSION	:= 0.4.0
 ST_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/$(ST_STACKS_SPEC_VERSION)/README.md
 
@@ -117,11 +117,11 @@ stacktools-info:
 
 .PHONY: stacks-environments
 stacks-environments:
-	@ls $(ST_HOST_ENVS_DIR) | sed s/all// | grep '\S'
+	@ls -d $(ST_HOST_ENVS_DIR)/*/ | xargs -n 1 basename | sed s/all// | grep '\S'
 
 .PHONY: stacks-list
 stacks-list:
-	@ls $(ST_HOST_DEFS_DIR)
+	@ls -d $(ST_HOST_DEFS_DIR)/*/ | xargs -n 1 basename
 
 .PHONY: stacks-new-tree
 stacks-new-tree:
@@ -175,6 +175,12 @@ stack-info:
 stack-init:
 	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) init $(ST_TF_BACKEND_OPT)
 
+.PHONY: stack-new
+stack-new:
+	@mkdir -p $(ST_HOST_DEFS_DIR)/$(STACK_NAME)
+	@ls -d $(ST_HOST_ENVS_DIR)/*/ | sed 's/$$/$(STACK_NAME).tfvars/' | xargs touch
+	@cp -r $(ST_HOST_DEFS_DIR)/template/* $(ST_HOST_DEFS_DIR)/$(STACK_NAME)
+
 .PHONY: stack-plan
 stack-plan:
 	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) plan $(ST_TF_PLAN_FILE_OPT) $(ST_TF_VARS_OPT) $(ST_TF_VAR_FILES_OPT)
@@ -182,6 +188,11 @@ stack-plan:
 .PHONY: stack-plan-json
 stack-plan-json:
 	@$(ST_TF_RUN_CMD) $(ST_TF_CHDIR_OPT) show -json
+
+.PHONY: stack-rm
+stack-rm:
+	@ls -d $(ST_HOST_ENVS_DIR)/*/ | sed 's/$$/$(STACK_NAME).tfvars/' | xargs rm
+	@rm -r $(ST_HOST_DEFS_DIR)/$(STACK_NAME)
 
 .PHONY: stack-shell
 stack-shell:

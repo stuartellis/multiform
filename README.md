@@ -86,9 +86,9 @@ Before you run other commands, use the *stackrunner-build* target to create a Do
 
 This creates the container image *stacktools-runner*. By default, the tooling runs every Terraform command in a temporary container with this image.
 
-Make targets for Terraform stacks use the prefix *stack-*. For example:
+Make targets for Terraform stacks use the prefix *stack-*. For example, *stack-new* creates the directories and files for a new stack:
 
-    make stack-fmt STACK_NAME=example_app
+    make stack-new STACK_NAME=example_app
 
 Specify *ENVIRONMENT* to create a deployment of the stack in the target environment:
 
@@ -126,7 +126,9 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 | stack-forget   | Delete state for a stack variant.      |
 | stack-info     | Show information for a stack           |
 | stack-init     | *terraform init* for a stack           |
+| stack-new      | Add source code for a new stack        |
 | stack-plan     | *terraform plan* for a stack           |
+| stack-rm       | Delete source code for a stack         |
 | stack-shell    | Open a shell                           |
 | stack-validate | *terraform validate* for a stack       |
 
@@ -189,7 +191,6 @@ By default, *stackrunner-build* builds the *stacktools-runner* container image f
 
 - Add guards in Make for undefined PROJECT_DIR, STACK_NAME or ENVIRONMENT variables.
 - Add .gitignore to documented setup process
-- Add target to generate a stack in terraform1/, copying content from terraform1/stacks/definitions/template/ if present
 - More friendly error message for *stack-forget* calls that try to delete default Terraform workspaces.
 - Add self-update target for stacktools files, to enable refreshes
 - Define standard path structure for Parameter Store.

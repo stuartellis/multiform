@@ -13,6 +13,7 @@ and this specification adheres to [Semantic Versioning](https://semver.org/spec/
 - Add examples and diagrams.
 - Add private Terraform modules.
 - Use Terraform workspaces.
+- Add template/ directory for definitions
 - Add reserved words.
 
 ### Changed
