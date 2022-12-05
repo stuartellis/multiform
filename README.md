@@ -70,9 +70,11 @@ All of the files for Terraform are in the directory *terraform1/*. Refer to the 
 
 https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/0.4.0/README.md
 
-Any other directories that contain Terraform code are ignored.
+You then customise the configuration:
 
-Ensure that your *.gitignore* files prevent Terraform state and temporary files from being added to source control.
+1. Add environments to the *terraform1/stacks/environments/* directory
+2. Add standard files for your stacks to *terraform1/stacks/definitions/template/*. The *stack-new* target automatically copies the contents of *template/* into each new stack.
+3. Add a *.gitignore* file to the *terraform1/* directory, or ensure that your existing *.gitignore* files prevent Terraform state and temporary files from being added to source control.
 
 > If you fork this repository, update the URL in the file *make/tools/stacktools/cli.mk* to point to the conventions README in your fork.
 
@@ -117,20 +119,20 @@ To specify a different container image for Terraform, set the *STACK_RUNNER_IMAG
 
 ### *stack* Targets
 
-| Name           | Description                            |
-|----------------|----------------------------------------|
-| stack-apply    | *terraform apply* for a stack          |
-| stack-console  | *terraform console* for a stack        |
-| stack-destroy  | *terraform apply -destroy* for a stack |
-| stack-fmt      | *terraform fmt* for a stack            |
-| stack-forget   | Delete state for a stack variant.      |
-| stack-info     | Show information for a stack           |
-| stack-init     | *terraform init* for a stack           |
-| stack-new      | Add source code for a new stack        |
-| stack-plan     | *terraform plan* for a stack           |
-| stack-rm       | Delete source code for a stack         |
-| stack-shell    | Open a shell                           |
-| stack-validate | *terraform validate* for a stack       |
+| Name           | Description                                                               |
+|----------------|---------------------------------------------------------------------------|
+| stack-apply    | *terraform apply* for a stack                                             |
+| stack-console  | *terraform console* for a stack                                           |
+| stack-destroy  | *terraform apply -destroy* for a stack                                    |
+| stack-fmt      | *terraform fmt* for a stack                                               |
+| stack-forget   | Delete state for a stack variant                                          |
+| stack-info     | Show information for a stack                                              |
+| stack-init     | *terraform init* for a stack                                              |
+| stack-new      | Add source code for a new stack. Copies content from *template* directory |
+| stack-plan     | *terraform plan* for a stack                                              |
+| stack-rm       | Delete source code for a stack                                            |
+| stack-shell    | Open a shell                                                              |
+| stack-validate | *terraform validate* for a stack                                          |
 
 ### *stacks* Targets
 
