@@ -11,7 +11,7 @@
 
 ###### Versions ######
 
-ST_STACKTOOLS_VERSION	:= 0.4.10
+ST_STACKTOOLS_VERSION	:= 0.4.11
 ST_STACKS_SPEC_VERSION	:= 0.4.0
 ST_STACKS_SPEC_URL		:= https://github.com/stuartellis/multiform/tree/main/docs/terraform-stacks-spec/$(ST_STACKS_SPEC_VERSION)/README.md
 
@@ -21,8 +21,8 @@ STACK_RUNNER_IMAGE		?= stacktools-runner:developer
 
 ###### Options ######
 
-ST_ENABLE_BACKEND	:= true
-ST_RUN_CONTAINER	:= true
+ST_ENABLE_BACKEND	?= true
+ST_RUN_CONTAINER	?= true
 
 ###### Paths ######
 
@@ -121,7 +121,7 @@ stacks-environments:
 
 .PHONY: stacks-list
 stacks-list:
-	@ls -d $(ST_HOST_DEFS_DIR)/*/ | xargs -n 1 basename
+	@ls -d $(ST_HOST_DEFS_DIR)/*/ | xargs -n 1 basename | sed s/template// | grep '\S'
 
 .PHONY: stacks-new-tree
 stacks-new-tree:
@@ -132,7 +132,7 @@ stacks-new-tree:
 	@mkdir -p $(ST_HOST_ENVS_DIR)
 	@echo "# Terraform Environments" > $(ST_HOST_ENVS_DIR)/README.md
 	@mkdir -p $(ST_HOST_ENVS_DIR)/all
-	@echo "# Terraform Variables for All Environments" > $(ST_HOST_ENVS_DIR)/README.md
+	@echo "# Terraform Variables Active for All Environments" > $(ST_HOST_ENVS_DIR)/all/README.md
 	@mkdir -p $(ST_HOST_MODULES_DIR)
 	@echo "# Terraform Modules" > $(ST_HOST_MODULES_DIR)/README.md
 	@mkdir -p $(ST_HOST_TMP_DIR)
