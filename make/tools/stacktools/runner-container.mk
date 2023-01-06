@@ -12,8 +12,8 @@
 
 ###### Versions ######
 
-ST_RUNNER_TERRAFORM_VERSION		?= 1.3.5
-ST_RUNNER_IMAGE_BASE			?= alpine:3.16.3
+ST_RUNNER_TERRAFORM_VERSION		?= 1.3.6
+ST_RUNNER_IMAGE_BASE			?= alpine:3.17.0
 ST_RUNNER_VERSION				?= developer
 
 ###### Platform ######
