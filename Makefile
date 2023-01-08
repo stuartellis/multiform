@@ -11,7 +11,7 @@ MAKEFLAGS += --no-builtin-rules
 
 # Default Target
 
-.DEFAULT_GOAL := stack-info
+.DEFAULT_GOAL := stacktools-info
 
 ### Required for Stack Tools
 
